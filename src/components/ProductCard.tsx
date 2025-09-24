@@ -136,11 +136,11 @@ const ProductCard = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-lg font-heading font-semibold text-primary">
-              ${price}
+              Ksh {price}
             </span>
             {originalPrice && (
               <span className="text-sm text-muted-foreground line-through">
-                ${originalPrice}
+                Ksh {originalPrice}
               </span>
             )}
           </div>

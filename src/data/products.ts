@@ -23,8 +23,8 @@ export const products: Product[] = [
   {
     id: "1",
     name: "Coral Dreams Bouquet",
-    price: 89,
-    originalPrice: 109,
+    price: 3200,
+    originalPrice: 3900,
     image: coralDreamsBouquet,
     rating: 4.8,
     reviewCount: 124,
@@ -36,7 +36,7 @@ export const products: Product[] = [
   {
     id: "2", 
     name: "Garden Fresh Mixed",
-    price: 65,
+    price: 2300,
     image: gardenFreshMixed,
     rating: 4.6,
     reviewCount: 89,
@@ -47,7 +47,7 @@ export const products: Product[] = [
   {
     id: "3",
     name: "Elegant White Orchid",
-    price: 120,
+    price: 4200,
     image: whiteOrchid, 
     rating: 4.9,
     reviewCount: 67,
@@ -58,7 +58,7 @@ export const products: Product[] = [
   {
     id: "4",
     name: "Sunny Sunflower Bundle",
-    price: 45,
+    price: 1600,
     image: sunflowerBundle,
     rating: 4.7,
     reviewCount: 156,
@@ -69,8 +69,8 @@ export const products: Product[] = [
   {
     id: "5",
     name: "Premium Rose Box",
-    price: 149,
-    originalPrice: 179,
+    price: 5200,
+    originalPrice: 6300,
     image: premiumRoseBox,
     rating: 4.9,
     reviewCount: 93,
@@ -81,7 +81,7 @@ export const products: Product[] = [
   {
     id: "6",
     name: "Spring Tulip Garden",
-    price: 55,
+    price: 1900,
     image: springTulips,
     rating: 4.5,
     reviewCount: 78,
