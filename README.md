@@ -1,26 +1,24 @@
-# Welcome to your Lovable project
+Bliss Bouquet Kenya
 
-## Project info
+Bliss Bouquet Kenya — an elegant, responsive online flowers & gifts shop UI and storefront. Built to showcase bouquets, gifts, subscriptions and an easy “Order via WhatsApp” flow for Kenyan customers — fast checkout, delivery scheduling, and simple admin tools for managing orders and inventory.
 
-**URL**: https://lovable.dev/projects/0bdb8ec1-c18e-4a08-abec-4ed758afb9a3
+Features (high level)
 
-## How can I edit this code?
+Product catalog (flowers, plants, gift hampers) with variants and prices
 
-There are several ways of editing your application.
+Product pages with personalization (gift message), add-ons and stock status
 
-**Use Lovable**
+Cart drawer + full cart page, promo codes, estimated delivery date
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/0bdb8ec1-c18e-4a08-abec-4ed758afb9a3) and start prompting.
+Checkout with multiple payment options (card, M-Pesa, Pay on Delivery)
 
-Changes made via Lovable will be committed automatically to this repo.
+Click-to-chat WhatsApp ordering (pre-filled messages)
 
-**Use your preferred IDE**
+Subscriptions (recurring bouquets) and corporate/quote flow
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Admin panel for orders, inventory and promotions
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+Accessibility best practices, SEO-ready product schema, lazy-loaded images
 
 ```sh
 # Step 1: Clone the repository using the project's Git URL.
