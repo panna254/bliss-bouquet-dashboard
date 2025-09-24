@@ -170,7 +170,7 @@ const Index = () => {
           </div>
           <div className="border-t border-border mt-8 pt-8 text-center">
             <p className="text-sm text-muted-foreground">
-              © 2024 Bloom & Bliss. All rights reserved. Made with ❤️ for flower lovers.
+              © 2025 Bliss Bouquet Kenya. Made with <span role="img" aria-label="love">❤️</span> by Ujuzi Solutions.
             </p>
           </div>
         </div>

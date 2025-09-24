@@ -77,7 +77,7 @@ const Hero = () => {
               {/* Floating price tag */}
               <div className="absolute top-6 right-6 bg-background/95 backdrop-blur rounded-lg p-3 shadow-medium animate-bounce-in">
                 <p className="text-sm text-muted-foreground">Starting from</p>
-                <p className="text-2xl font-heading font-semibold text-primary">$49</p>
+                <p className="text-2xl font-heading font-semibold text-primary">Ksh 3200</p>
               </div>
             </div>
 
