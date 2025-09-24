@@ -1,5 +1,8 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
+import CategoryTiles from "@/components/CategoryTiles";
+import FeaturedCarousel from "@/components/FeaturedCarousel";
+import TrendingOccasions from "@/components/TrendingOccasions";
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,8 +22,11 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <Hero />
+      <CategoryTiles />
+      <FeaturedCarousel />
+      <TrendingOccasions />
       
-      {/* Featured Categories */}
+      {/* Products Section */}
       <section className="py-16 bg-muted/30">
         <div className="container">
           <div className="text-center mb-12">

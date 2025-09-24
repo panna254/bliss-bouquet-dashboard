@@ -3,6 +3,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Heart, ShoppingCart, Star } from "lucide-react";
 import { useState } from "react";
+import { useCart } from "@/contexts/CartContext";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProductCardProps {
   id: string;
@@ -31,10 +33,12 @@ const ProductCard = ({
 }: ProductCardProps) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const { addToCart } = useCart();
+  const { toast } = useToast();
 
   const handleAddToCart = () => {
-    // Add cart functionality here
-    console.log(`Added ${name} to cart`);
+    const product = { id, name, price, originalPrice, image, rating, reviewCount, isPopular, isSameDay, description, category: "bouquets" };
+    addToCart(product);
   };
 
   const toggleWishlist = () => {

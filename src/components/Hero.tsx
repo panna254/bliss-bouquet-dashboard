@@ -2,10 +2,16 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Truck, Clock, Heart } from "lucide-react";
 import heroImage from "@/assets/hero-flowers.jpg";
+import SearchBar from "./SearchBar";
 
 const Hero = () => {
   return (
     <section className="relative overflow-hidden bg-gradient-hero">
+      {/* Seasonal Banner */}
+      <div className="bg-accent text-accent-foreground text-center py-3 text-sm font-medium animate-fade-in">
+        🌸 Spring Special: Same-day delivery in Manhattan • Free delivery on orders $75+ • Use code SPRING20
+      </div>
+      
       <div className="container py-16 md:py-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Column - Content */}
@@ -79,6 +85,11 @@ const Hero = () => {
             <div className="absolute -top-8 -left-8 w-16 h-16 bg-primary/10 rounded-full blur-xl" />
             <div className="absolute -bottom-8 -right-8 w-24 h-24 bg-accent/10 rounded-full blur-xl" />
           </div>
+        </div>
+        
+        {/* Search Bar */}
+        <div className="mt-16 animate-fade-in">
+          <SearchBar />
         </div>
       </div>
     </section>
