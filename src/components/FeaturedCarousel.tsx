@@ -53,10 +53,12 @@ const FeaturedCarousel = () => {
         <div className="relative overflow-hidden">
           <div 
             className="flex transition-transform duration-500 ease-in-out"
-            style={{ transform: `translateX(-${currentIndex * (100 / 3)}%)` }}
+            style={{
+              transform: `translateX(-${currentIndex * (window.innerWidth < 640 ? 100 : window.innerWidth < 768 ? 50 : 33.3333)}%)`
+            }}
           >
             {featuredProducts.map((product, index) => (
-              <div key={product.id} className="w-1/3 flex-shrink-0 px-3">
+              <div key={product.id} className="w-full sm:w-1/2 md:w-1/3 flex-shrink-0 px-1 sm:px-2 md:px-3">
                 <Card className="group overflow-hidden bg-gradient-card border-border hover:shadow-card-hover transition-elegant cursor-pointer h-full">
                   <div className="relative overflow-hidden">
                     <div className="aspect-square overflow-hidden">

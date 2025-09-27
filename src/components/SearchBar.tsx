@@ -21,9 +21,9 @@ const SearchBar = () => {
           />
         </div>
 
-        {/* Location Selector */}
-        <div className="flex items-center gap-4">
-          <div className="relative min-w-[200px]">
+        {/* Location Selector & Search Button */}
+        <div className="flex flex-col gap-4 w-full lg:flex-row lg:items-center lg:gap-4">
+          <div className="relative min-w-[200px] w-full">
             <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <select
               value={location}
@@ -42,9 +42,7 @@ const SearchBar = () => {
               <option value="Meru">Meru</option>
             </select>
           </div>
-
-          {/* Search Button */}
-          <Button variant="hero" size="lg" className="px-8">
+          <Button variant="hero" size="lg" className="px-8 w-full lg:w-auto">
             <Search className="w-5 h-5 mr-2" />
             Search
           </Button>
@@ -57,6 +55,7 @@ const SearchBar = () => {
         {["Roses", "Birthday Bouquet", "Anniversary", "Same-Day", "Sympathy"].map((tag) => (
           <button
             key={tag}
+            title={`Quick search for ${tag}`}
             className="px-3 py-1 text-sm bg-muted hover:bg-accent hover:text-accent-foreground rounded-full transition-elegant"
           >
             {tag}
