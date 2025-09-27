@@ -161,8 +161,8 @@ const Index = () => {
             <div className="space-y-4">
               <h4 className="font-semibold text-foreground">Contact</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>📞 (555) 123-BLOOM</li>
-                <li>✉️ hello@bloomandbliss.com</li>
+                <li>📞 <a href="tel:0743491613" className="hover:text-primary transition-elegant">0743491613</a></li>
+                <li>✉️ <a href="mailto:blissbouquet187@gmail.com" className="hover:text-primary transition-elegant">blissbouquet187@gmail.com</a></li>
                 <li>🕒 Mon-Sat: 8AM-8PM</li>
                 <li>📍 Same-day delivery available</li>
               </ul>
