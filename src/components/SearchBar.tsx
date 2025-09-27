@@ -4,7 +4,7 @@ import { useState } from "react";
 
 const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [location, setLocation] = useState("New York");
+  const [location, setLocation] = useState("Nairobi");
 
   return (
     <div className="w-full max-w-4xl mx-auto bg-background/95 backdrop-blur rounded-2xl shadow-elegant border border-border p-6">
@@ -30,11 +30,16 @@ const SearchBar = () => {
               onChange={(e) => setLocation(e.target.value)}
               className="w-full pl-12 pr-4 py-4 text-foreground bg-muted/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-elegant appearance-none cursor-pointer"
             >
-              <option value="New York">New York, NY</option>
-              <option value="Los Angeles">Los Angeles, CA</option>
-              <option value="Chicago">Chicago, IL</option>
-              <option value="Houston">Houston, TX</option>
-              <option value="Miami">Miami, FL</option>
+              <option value="Nairobi">Nairobi</option>
+              <option value="Mombasa">Mombasa</option>
+              <option value="Kisumu">Kisumu</option>
+              <option value="Eldoret">Eldoret</option>
+              <option value="Nakuru">Nakuru</option>
+              <option value="Thika">Thika</option>
+              <option value="Kitale">Kitale</option>
+              <option value="Machakos">Machakos</option>
+              <option value="Nyeri">Nyeri</option>
+              <option value="Meru">Meru</option>
             </select>
           </div>
 

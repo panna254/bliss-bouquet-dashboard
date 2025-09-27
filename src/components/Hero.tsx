@@ -9,7 +9,7 @@ const Hero = () => {
     <section className="relative overflow-hidden bg-gradient-hero">
       {/* Seasonal Banner */}
       <div className="bg-accent text-accent-foreground text-center py-3 text-sm font-medium animate-fade-in">
-        🌸 Spring Special: Same-day delivery in Manhattan • Free delivery on orders $75+ • Use code SPRING20
+        🌸 Welcome to Bliss Bouquet Kenya! Experience the freshest flowers, beautiful arrangements, and heartfelt service—delivered with love across Kenya.
       </div>
       
       <div className="container py-16 md:py-24">

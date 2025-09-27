@@ -135,7 +135,7 @@ const Index = () => {
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="space-y-4">
-              <h3 className="font-heading font-semibold text-foreground">Bloom & Bliss</h3>
+              <h3 className="font-heading font-semibold text-foreground">Bliss Bouquet Kenya</h3>
               <p className="text-sm text-muted-foreground">
                 Premium flowers and gifts delivered fresh to your doorstep with love and care.
               </p>

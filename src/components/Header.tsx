@@ -13,42 +13,42 @@ const Header = () => {
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
         <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center">
-            <span className="text-white font-bold text-sm">B</span>
+          <div className="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center">
+            <span className="text-white font-bold text-lg">BBK</span>
           </div>
-          <h1 className="text-xl font-heading font-semibold text-foreground">
-            Bloom & Bliss
+          <h1 className="text-2xl font-heading font-extrabold text-primary">
+            Bliss Bouquet Kenya
           </h1>
         </div>
 
         {/* Navigation - Hidden on mobile */}
         <nav className="hidden md:flex items-center space-x-8">
           <a 
-            href="#" 
+            href="#fresh-flowers" 
             className="text-sm font-medium text-foreground hover:text-primary transition-elegant"
           >
             Fresh Flowers
           </a>
           <a 
-            href="#" 
+            href="#bouquets" 
             className="text-sm font-medium text-foreground hover:text-primary transition-elegant"
           >
             Bouquets
           </a>
           <a 
-            href="#" 
+            href="#plants" 
             className="text-sm font-medium text-foreground hover:text-primary transition-elegant"
           >
             Plants
           </a>
           <a 
-            href="#" 
+            href="#gifts" 
             className="text-sm font-medium text-foreground hover:text-primary transition-elegant"
           >
             Gifts
           </a>
           <a 
-            href="#" 
+            href="#same-day" 
             className="text-sm font-medium text-foreground hover:text-primary transition-elegant"
           >
             Same-Day Delivery
