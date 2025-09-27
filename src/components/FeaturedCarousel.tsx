@@ -23,10 +23,10 @@ const FeaturedCarousel = () => {
         <div className="flex justify-between items-end mb-12">
           <div>
             <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-4">
-              Featured Products
+              Bliss Bouquet Kenya Featured Products
             </h2>
             <p className="text-lg text-muted-foreground">
-              Our most loved arrangements, perfect for any occasion
+              Discover our most loved arrangements, handpicked for you by Bliss Bouquet Kenya.
             </p>
           </div>
           

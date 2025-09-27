@@ -11,12 +11,12 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
       <div className="container flex h-16 items-center justify-between">
-        {/* Logo */}
+        {/* Logo - Always visible, including mobile */}
         <div className="flex items-center space-x-2">
           <div className="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center">
             <span className="text-white font-bold text-lg">BBK</span>
           </div>
-          <h1 className="text-2xl font-heading font-extrabold text-primary">
+          <h1 className="text-2xl font-heading font-extrabold text-primary whitespace-nowrap">
             Bliss Bouquet Kenya
           </h1>
         </div>
