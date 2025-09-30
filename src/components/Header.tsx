@@ -3,10 +3,20 @@ import { Badge } from "@/components/ui/badge";
 import { ShoppingCart, Search, Menu, Heart } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import SearchBar from "./SearchBar";
 
 const Header = () => {
   const { getCartCount } = useCart();
   const cartCount = getCartCount();
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
@@ -23,42 +33,47 @@ const Header = () => {
 
         {/* Navigation - Hidden on mobile */}
         <nav className="hidden md:flex items-center space-x-8">
-          <a 
-            href="#fresh-flowers" 
+          <button 
+            onClick={() => scrollToSection('categories')}
             className="text-sm font-medium text-foreground hover:text-primary transition-elegant"
           >
             Fresh Flowers
-          </a>
-          <a 
-            href="#bouquets" 
+          </button>
+          <button 
+            onClick={() => scrollToSection('featured')}
             className="text-sm font-medium text-foreground hover:text-primary transition-elegant"
           >
             Bouquets
-          </a>
-          <a 
-            href="#plants" 
+          </button>
+          <button 
+            onClick={() => scrollToSection('occasions')}
             className="text-sm font-medium text-foreground hover:text-primary transition-elegant"
           >
             Plants
-          </a>
-          <a 
-            href="#gifts" 
+          </button>
+          <button 
+            onClick={() => scrollToSection('products')}
             className="text-sm font-medium text-foreground hover:text-primary transition-elegant"
           >
             Gifts
-          </a>
-          <a 
-            href="#same-day" 
+          </button>
+          <button 
+            onClick={() => scrollToSection('hero')}
             className="text-sm font-medium text-foreground hover:text-primary transition-elegant"
           >
             Same-Day Delivery
-          </a>
+          </button>
         </nav>
 
         {/* Search and Actions */}
         <div className="flex items-center space-x-4">
           {/* Search Button */}
-          <Button variant="ghost" size="icon" className="hover:bg-muted">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="hover:bg-muted"
+            onClick={() => setSearchOpen(true)}
+          >
             <Search className="h-5 w-5" />
           </Button>
 
@@ -86,6 +101,16 @@ const Header = () => {
           </Button>
         </div>
       </div>
+
+      {/* Search Dialog */}
+      <Dialog open={searchOpen} onOpenChange={setSearchOpen}>
+        <DialogContent className="max-w-5xl">
+          <DialogHeader>
+            <DialogTitle>Search Flowers & Gifts</DialogTitle>
+          </DialogHeader>
+          <SearchBar />
+        </DialogContent>
+      </Dialog>
     </header>
   );
 };

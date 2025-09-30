@@ -13,21 +13,33 @@ import { Filter, Grid, List } from "lucide-react";
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [displayCount, setDisplayCount] = useState(8);
 
   const filteredProducts = selectedCategory === "all" 
     ? products 
     : products.filter(product => product.category === selectedCategory);
 
+  const displayedProducts = filteredProducts.slice(0, displayCount);
+  const hasMore = displayCount < filteredProducts.length;
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <Hero />
-      <CategoryTiles />
-      <FeaturedCarousel />
-      <TrendingOccasions />
+      <div id="hero">
+        <Hero />
+      </div>
+      <div id="categories">
+        <CategoryTiles />
+      </div>
+      <div id="featured">
+        <FeaturedCarousel />
+      </div>
+      <div id="occasions">
+        <TrendingOccasions />
+      </div>
       
       {/* Products Section */}
-      <section className="py-16 bg-muted/30">
+      <section id="products" className="py-16 bg-muted/30">
         <div className="container">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-4">
@@ -86,7 +98,7 @@ const Index = () => {
               ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" 
               : "grid-cols-1"
           }`}>
-            {filteredProducts.map((product, index) => (
+            {displayedProducts.map((product, index) => (
               <div
                 key={product.id}
                 className="animate-fade-in"
@@ -98,11 +110,17 @@ const Index = () => {
           </div>
 
           {/* Load More */}
-          <div className="text-center mt-12">
-            <Button variant="outline" size="lg">
-              Load More Products
-            </Button>
-          </div>
+          {hasMore && (
+            <div className="text-center mt-12">
+              <Button 
+                variant="outline" 
+                size="lg"
+                onClick={() => setDisplayCount(prev => prev + 8)}
+              >
+                Load More Products
+              </Button>
+            </div>
+          )}
         </div>
       </section>
 
