@@ -23,18 +23,18 @@ const Header = () => {
       <div className="container flex h-16 items-center justify-between">
         {/* Logo - Always visible, including mobile */}
         <div className="flex items-center space-x-2">
-          <div className="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center">
-            <span className="text-white font-bold text-lg">BBK</span>
-          </div>
-          <h1 className="text-2xl font-heading font-extrabold text-primary whitespace-nowrap">
-            Bliss Bouquet Kenya
-          </h1>
+          <a href="/" className="flex items-center space-x-2">
+            <img 
+              src="/logo.png" 
+              alt="Bliss Bouquet Kenya" 
+              className="h-12 w-auto transition-all duration-200 hover:scale-105"
+            />
+          </a>
         </div>
 
         {/* Navigation - Hidden on mobile */}
         <nav className="hidden md:flex items-center space-x-8">
           <button 
-            onClick={() => scrollToSection('categories')}
             className="text-sm font-medium text-foreground hover:text-primary transition-elegant"
           >
             Fresh Flowers

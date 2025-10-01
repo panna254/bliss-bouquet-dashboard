@@ -32,55 +32,55 @@ export interface Product {
 export const products: Product[] = [
   {
     id: "1",
-    name: "Coral Dreams Bouquet",
-    price: 3200,
-    originalPrice: 3900,
+    name: "Dreams Bouquet",
+    price: 2600,
+    originalPrice: 3000,
     image: coralDreamsBouquet,
     rating: 4.8,
     reviewCount: 124,
     isPopular: true,
     isSameDay: true,
-    description: "Stunning coral roses with white peonies and eucalyptus, perfect for any special occasion.",
+    description: "Stunning roses bouquet with white peonies and eucalyptus, perfect for any special occasion.",
     category: "bouquets"
   },
   {
     id: "2", 
-    name: "Garden Fresh Mixed",
-    price: 2300,
+    name: "Rose Gift Set",
+    price: 8000,
     image: gardenFreshMixed,
     rating: 4.6,
     reviewCount: 89,
     isSameDay: true,
-    description: "A delightful mix of seasonal flowers including roses, lilies, and baby's breath.",
-    category: "mixed"
+    description: "Elegant bouquet featuring fresh roses, seasonal flowers, and a special touch of rolled notes, beautifully arranged in a premium gift set. Perfect for expressing your heartfelt emotions on any occasion.",
+    category: "gift sets"
   },
   {
     id: "3",
-    name: "Elegant White Orchid",
-    price: 4200,
+    name: "Packed Roses Bouquet",
+    price: 3000,
     image: whiteOrchid, 
     rating: 4.9,
     reviewCount: 67,
     isPopular: true,
-    description: "Sophisticated white orchid in premium ceramic pot, perfect for office or home.",
-    category: "plants"
+    description: "Exquisite packed roses bouquet, hand-tied with seasonal foliage for a fresh and elegant presentation.",
+    category: "bouquets"
   },
   {
     id: "4",
-    name: "Sunny Sunflower Bundle",
-    price: 1600,
-    image: sunflowerBundle,
-    rating: 4.7,
-    reviewCount: 156,
+    name: "Elegant Rose Gift Hamper",
+    price: 7500,
+    image: sunflowerBundle, // Note: You might want to update this image to match the rose hamper
+    rating: 4.8,
+    reviewCount: 64,
     isSameDay: true,
-    description: "Bright and cheerful sunflowers to bring sunshine to any room.",
-    category: "seasonal"
+    description: "A luxurious rose gift hamper featuring a beautiful arrangement of premium roses, complemented by gourmet chocolates and a scented candle. Perfect for special occasions and romantic gestures.",
+    category: "gift-hampers"
   },
   {
     id: "5",
     name: "Premium Rose Box",
-    price: 5200,
-    originalPrice: 6300,
+    price: 3000,
+    originalPrice: 5200,
     image: premiumRoseBox,
     rating: 4.9,
     reviewCount: 93,
