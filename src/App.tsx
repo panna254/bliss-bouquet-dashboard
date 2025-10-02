@@ -7,6 +7,10 @@ import { CartProvider } from "@/contexts/CartContext";
 import WhatsAppButton from "./components/WhatsAppButton";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import ContactUs from "./pages/ContactUs";
+import DeliveryInfo from "./pages/DeliveryInfo";
+import CareGuide from "./pages/CareGuide";
+import Returns from "./pages/Returns";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +23,10 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/contact-us" element={<ContactUs />} />
+            <Route path="/delivery-info" element={<DeliveryInfo />} />
+            <Route path="/care-guide" element={<CareGuide />} />
+            <Route path="/returns" element={<Returns />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { products, categories } from "@/data/products";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Filter, Grid, List } from "lucide-react";
 
 const Index = () => {
@@ -170,10 +171,10 @@ const Index = () => {
             <div className="space-y-4">
               <h4 className="font-semibold text-foreground">Support</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-primary transition-elegant">Contact Us</a></li>
-                <li><a href="#" className="hover:text-primary transition-elegant">Delivery Info</a></li>
-                <li><a href="#" className="hover:text-primary transition-elegant">Care Guide</a></li>
-                <li><a href="#" className="hover:text-primary transition-elegant">Returns</a></li>
+                <li><Link to="/contact-us" className="hover:text-primary transition-elegant">Contact Us</Link></li>
+                <li><Link to="/delivery-info" className="hover:text-primary transition-elegant">Delivery Info</Link></li>
+                <li><Link to="/care-guide" className="hover:text-primary transition-elegant">Care Guide</Link></li>
+                <li><Link to="/returns" className="hover:text-primary transition-elegant">Returns</Link></li>
               </ul>
             </div>
             <div className="space-y-4">
