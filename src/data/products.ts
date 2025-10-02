@@ -166,13 +166,13 @@ export const products: Product[] = [
   {
     id: "13",
     name: "Lily Elegance",
-    price: 3100,
+    price: 6500,
     image: lilyElegance,
     rating: 4.7,
     reviewCount: 98,
     isSameDay: true,
-    description: "White and pink oriental lilies with greenery, sophisticated choice.",
-    category: "bouquets"
+    description: "Elegant yellow roses paired with a premium wine bottle, perfect for anniversaries, birthdays, or as a thoughtful gift for any special occasion.",
+    category: "gift-sets"
   },
   {
     id: "14",
