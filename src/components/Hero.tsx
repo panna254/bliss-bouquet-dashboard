@@ -120,11 +120,11 @@ const Hero = () => {
       </div>
       
       {/* Hero Content */}
-      <div className="relative z-10 flex-1 flex items-center">
+      <div className="relative z-10 flex-1 flex items-center justify-center">
         <div className="container py-16 md:py-24">
-          <div className="max-w-4xl">
+          <div className="max-w-4xl mx-auto">
             {/* Content */}
-            <div className="space-y-8 text-center lg:text-left">
+            <div className="space-y-8 text-center">
               {/* Badge */}
               <Badge 
                 className="inline-flex bg-accent/90 backdrop-blur-sm text-accent-foreground hover:bg-accent animate-fade-in"
@@ -139,13 +139,13 @@ const Hero = () => {
                   {currentSlideData.title}
                   <span className="block text-accent">{currentSlideData.subtitle}</span>
                 </h1>
-                <p className="text-lg md:text-xl text-white/90 max-w-2xl font-body drop-shadow-md leading-relaxed">
+                <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto font-body drop-shadow-md leading-relaxed">
                   {currentSlideData.description}
                 </p>
               </div>
 
               {/* CTAs */}
-              <div className="flex flex-col sm:flex-row gap-4 animate-scale-in">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in">
                 <Button 
                   variant="hero" 
                   size="hero" 
@@ -163,7 +163,7 @@ const Hero = () => {
               </div>
 
               {/* Features */}
-              <div className="flex flex-wrap justify-center lg:justify-start gap-6 pt-4 animate-fade-in">
+              <div className="flex flex-wrap justify-center gap-6 pt-4 animate-fade-in">
                 <div className="flex items-center gap-2 text-white/90 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5">
                   <Truck className="w-4 h-4 text-accent" />
                   <span className="text-xs font-medium">Same-Day Delivery</span>
