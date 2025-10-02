@@ -168,7 +168,7 @@ export const products: Product[] = [
   },
   {
     id: "13",
-    name: "Lily Elegance",
+    name: "Yellow Roses & Wine Gift Set",
     price: 6500,
     image: lilyElegance,
     rating: 4.7,
