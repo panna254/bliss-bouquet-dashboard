@@ -2,13 +2,13 @@ import { Truck, Clock, MapPin, Package, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const DeliveryInfo = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-secondary/5 via-background to-primary/5">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-secondary/5 via-background to-primary/5">
       <Header />
-
-      <main className="container py-12 animate-fade-in">
+      <main className="flex-1 container py-12 animate-fade-in">
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="text-center space-y-4">
             <h1 className="text-4xl md:text-5xl font-heading font-bold text-foreground">
@@ -166,14 +166,17 @@ const DeliveryInfo = () => {
               </div>
             </CardContent>
           </Card>
+          
+          <div className="text-center mt-8">
+            <a href="/" className="inline-block">
+              <button className="px-6 py-3 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors duration-200 font-medium">
+                ← Back to Home
+              </button>
+            </a>
+          </div>
         </div>
       </main>
-
-      <footer className="py-8 border-t border-border bg-background/95 backdrop-blur">
-        <div className="container text-center text-sm text-muted-foreground">
-          <p>© 2025 Bliss Bouquet Kenya. Made with ❤️ by Ujuzi Solutions.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

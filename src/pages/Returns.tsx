@@ -3,13 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const Returns = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-accent/5">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-primary/5 via-background to-accent/5">
       <Header />
-
-      <main className="container py-12 animate-fade-in">
+      <main className="flex-1 container py-12 animate-fade-in">
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="text-center space-y-4">
             <h1 className="text-4xl md:text-5xl font-heading font-bold text-foreground">
@@ -219,12 +219,7 @@ const Returns = () => {
           </Card>
         </div>
       </main>
-
-      <footer className="py-8 border-t border-border bg-background/95 backdrop-blur">
-        <div className="container text-center text-sm text-muted-foreground">
-          <p>© 2025 Bliss Bouquet Kenya. Made with ❤️ by Ujuzi Solutions.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
