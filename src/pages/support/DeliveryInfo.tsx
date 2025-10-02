@@ -1,5 +1,6 @@
 import { Truck, Clock, MapPin, Package, Shield } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import Layout from "@/components/Layout";
 
 const DeliveryInfo = () => {
   const deliveryOptions = [
@@ -55,8 +56,9 @@ const DeliveryInfo = () => {
   ];
 
   return (
-    <div className="container py-16">
-      <div className="max-w-4xl mx-auto">
+    <Layout>
+      <div className="container py-16">
+        <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-heading font-bold text-foreground mb-4">Delivery Information</h1>
           <p className="text-lg text-muted-foreground">
@@ -172,8 +174,9 @@ const DeliveryInfo = () => {
             </a>
           </section>
         </div>
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
