@@ -4,6 +4,7 @@ import CategoryTiles from "@/components/CategoryTiles";
 import FeaturedCarousel from "@/components/FeaturedCarousel";
 import TrendingOccasions from "@/components/TrendingOccasions";
 import ProductCard from "@/components/ProductCard";
+import Newsletter from "@/components/Newsletter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { products, categories } from "@/data/products";
@@ -127,28 +128,7 @@ const Index = () => {
       </section>
 
       {/* Newsletter Section */}
-      <section className="py-16 bg-gradient-hero">
-        <div className="container text-center">
-          <div className="max-w-2xl mx-auto space-y-6">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground">
-              Stay in Bloom
-            </h2>
-            <p className="text-lg text-muted-foreground">
-              Get exclusive offers, seasonal arrangements, and flower care tips delivered to your inbox
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-              <input 
-                type="email" 
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <Button variant="default" size="lg">
-                Subscribe
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      <Newsletter />
 
       <Footer />
     </div>
