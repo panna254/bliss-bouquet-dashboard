@@ -52,7 +52,7 @@ export const products: Product[] = [
     reviewCount: 89,
     isSameDay: true,
     description: "Elegant bouquet featuring fresh roses, seasonal flowers, and a special touch of rolled notes, beautifully arranged in a premium gift set. Perfect for expressing your heartfelt emotions on any occasion.",
-    category: "gift sets"
+    category: "gift-sets"
   },
   {
     id: "3",
@@ -74,7 +74,7 @@ export const products: Product[] = [
     reviewCount: 64,
     isSameDay: true,
     description: "A luxurious rose gift hamper featuring a beautiful arrangement of premium roses, complemented by gourmet chocolates and a scented candle. Perfect for special occasions and romantic gestures.",
-    category: "gift-hampers"
+    category: "gift-sets"
   },
   {
     id: "5",
@@ -86,7 +86,7 @@ export const products: Product[] = [
     reviewCount: 93,
     isPopular: true,
     description: "Luxury long-stem roses in elegant gift box with gold accents.",
-    category: "premium"
+    category: "roses"
   },
   {
     id: "6",
@@ -97,7 +97,7 @@ export const products: Product[] = [
     reviewCount: 78,
     isSameDay: true,
     description: "Fresh tulips in vibrant colors, capturing the essence of spring.",
-    category: "seasonal"
+    category: "bouquets"
   },
   {
     id: "7",
@@ -118,7 +118,7 @@ export const products: Product[] = [
     rating: 4.8,
     reviewCount: 85,
     description: "Exotic tropical flowers including bird of paradise and anthuriums.",
-    category: "mixed"
+    category: "bouquets"
   },
   {
     id: "9",
@@ -150,7 +150,7 @@ export const products: Product[] = [
     reviewCount: 187,
     isPopular: true,
     description: "Classic red roses in elegant presentation, perfect for romance.",
-    category: "premium"
+    category: "roses"
   },
   {
     id: "12",
@@ -161,7 +161,7 @@ export const products: Product[] = [
     reviewCount: 64,
     isSameDay: true,
     description: "Rustic wildflower mix with daisies and cosmos, country charm.",
-    category: "seasonal"
+    category: "bouquets"
   },
   {
     id: "13",
@@ -183,7 +183,7 @@ export const products: Product[] = [
     reviewCount: 73,
     isSameDay: true,
     description: "Colorful chrysanthemums in yellow, orange, and purple.",
-    category: "seasonal"
+    category: "bouquets"
   },
   {
     id: "15",
@@ -195,7 +195,7 @@ export const products: Product[] = [
     reviewCount: 56,
     isPopular: true,
     description: "Rare protea flowers, dramatic and unique luxury arrangement.",
-    category: "premium"
+    category: "roses"
   },
   {
     id: "16",
@@ -213,7 +213,7 @@ export const products: Product[] = [
 export const categories = [
   {
     id: "all",
-    name: "All Flowers",
+    name: "All Products",
     count: products.length
   },
   {
@@ -222,18 +222,13 @@ export const categories = [
     count: products.filter(p => p.category === "bouquets").length
   },
   {
-    id: "plants",
-    name: "Plants", 
-    count: products.filter(p => p.category === "plants").length
+    id: "gift-sets",
+    name: "Gift Sets",
+    count: products.filter(p => p.category === "gift-sets").length
   },
   {
-    id: "premium",
-    name: "Premium",
-    count: products.filter(p => p.category === "premium").length
-  },
-  {
-    id: "seasonal",
-    name: "Seasonal",
-    count: products.filter(p => p.category === "seasonal").length
+    id: "roses",
+    name: "Roses",
+    count: products.filter(p => p.category === "roses").length
   }
 ];
