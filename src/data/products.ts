@@ -102,13 +102,14 @@ export const products: Product[] = [
   },
   {
     id: "7",
-    name: "Lavender Bliss Arrangement",
-    price: 2800,
-    image: lavenderBliss,
+    name: "Purple and Red Roses Bouquet",
+    price: 3000,
+    image: lavenderBliss, // Note: Consider updating the image to match the new bouquet
     rating: 4.7,
     reviewCount: 112,
     isSameDay: true,
-    description: "Purple lavender stems with white roses, calming and elegant.",
+    isPopular: true,
+    description: "A stunning bouquet featuring a beautiful mix of purple and red roses, symbolizing enchantment and love. Perfect for romantic occasions, anniversaries, or to make a bold statement of affection.",
     category: "bouquets"
   },
   {
