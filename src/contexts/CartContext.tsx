@@ -14,6 +14,10 @@ interface CartContextType {
   clearCart: () => void;
   getCartTotal: () => number;
   getCartCount: () => number;
+  isCartOpen: boolean;
+  openCart: () => void;
+  closeCart: () => void;
+  toggleCart: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -32,6 +36,7 @@ interface CartProviderProps {
 
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const { toast } = useToast();
 
   const addToCart = (product: Product, quantity = 1) => {
@@ -102,6 +107,18 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     return items.reduce((count, item) => count + item.quantity, 0);
   };
 
+  const openCart = () => {
+    setIsCartOpen(true);
+  };
+
+  const closeCart = () => {
+    setIsCartOpen(false);
+  };
+
+  const toggleCart = () => {
+    setIsCartOpen(!isCartOpen);
+  };
+
   const value: CartContextType = {
     items,
     addToCart,
@@ -110,6 +127,10 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     clearCart,
     getCartTotal,
     getCartCount,
+    isCartOpen,
+    openCart,
+    closeCart,
+    toggleCart,
   };
 
   return (

@@ -35,12 +35,14 @@ const ProductCard = ({
 }: ProductCardProps) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const { addToCart } = useCart();
+  const { addToCart, openCart } = useCart();
   const { toast } = useToast();
 
   const handleAddToCart = () => {
     const product = { id, name, price, originalPrice, image, rating, reviewCount, isPopular, isSameDay, description, category };
     addToCart(product);
+    // Optionally open cart after adding item
+    setTimeout(() => openCart(), 500);
   };
 
   const toggleWishlist = () => {

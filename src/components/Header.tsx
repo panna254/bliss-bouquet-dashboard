@@ -5,9 +5,10 @@ import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import SearchBar from "./SearchBar";
+import CartPanel from "./CartPanel";
 
 const Header = () => {
-  const { getCartCount } = useCart();
+  const { getCartCount, toggleCart } = useCart();
   const cartCount = getCartCount();
   const [searchOpen, setSearchOpen] = useState(false);
 
@@ -83,7 +84,12 @@ const Header = () => {
           </Button>
 
           {/* Cart */}
-          <Button variant="ghost" size="icon" className="relative hover:bg-muted">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="relative hover:bg-muted"
+            onClick={toggleCart}
+          >
             <ShoppingCart className="h-5 w-5" />
             {cartCount > 0 && (
               <Badge 
@@ -111,6 +117,9 @@ const Header = () => {
           <SearchBar />
         </DialogContent>
       </Dialog>
+      
+      {/* Cart Panel */}
+      <CartPanel />
     </header>
   );
 };
