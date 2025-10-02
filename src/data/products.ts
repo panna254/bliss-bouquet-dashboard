@@ -90,14 +90,15 @@ export const products: Product[] = [
   },
   {
     id: "6",
-    name: "Spring Tulip Garden",
-    price: 1900,
-    image: springTulips,
-    rating: 4.5,
-    reviewCount: 78,
+    name: "Tulip Flowers Gift Set",
+    price: 7500,
+    image: springTulips, // Note: Consider updating the image to match the gift set
+    rating: 4.7,
+    reviewCount: 92,
     isSameDay: true,
-    description: "Fresh tulips in vibrant colors, capturing the essence of spring.",
-    category: "bouquets"
+    isPopular: true,
+    description: "An elegant gift set featuring a beautiful arrangement of fresh tulips in a decorative vase, perfect for birthdays, anniversaries, or to brighten someone's day. This set includes a selection of vibrant tulips in seasonal colors, carefully arranged with complementary foliage.",
+    category: "gift-sets"
   },
   {
     id: "7",
@@ -146,14 +147,14 @@ export const products: Product[] = [
   },
   {
     id: "11",
-    name: "Red Rose Romance",
+    name: "Red & Blue Roses bouquet",
     price: 4800,
     image: redRoseRomance,
     rating: 4.9,
     reviewCount: 187,
     isPopular: true,
-    description: "Classic red roses in elegant presentation, perfect for romance.",
-    category: "roses"
+    description: "Classic red roses in elegant presentation, perfect for happy moments.",
+    category: "bouquets"
   },
   {
     id: "12",
