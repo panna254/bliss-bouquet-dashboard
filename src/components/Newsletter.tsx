@@ -39,11 +39,9 @@ const Newsletter = () => {
     setIsLoading(true);
 
     try {
-      // Submit to Netlify Forms
-      const formData = new FormData();
-      formData.append('form-name', 'newsletter');
-      formData.append('email', email);
-
+      // Submit to Netlify Forms using fetch
+      const formData = new FormData(e.target as HTMLFormElement);
+      
       const response = await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -124,13 +122,18 @@ const Newsletter = () => {
           <form 
             name="newsletter" 
             method="POST" 
+            action="/"
             data-netlify="true"
             data-netlify-honeypot="bot-field"
             onSubmit={handleSubscribe} 
             className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
           >
             <input type="hidden" name="form-name" value="newsletter" />
-            <input type="hidden" name="bot-field" />
+            <p style={{ display: 'none' }}>
+              <label>
+                Don't fill this out if you're human: <input name="bot-field" />
+              </label>
+            </p>
             <Input 
               type="email" 
               name="email"
