@@ -133,13 +133,15 @@ export const products: Product[] = [
   },
   {
     id: "10",
-    name: "Succulent Garden Box",
-    price: 2100,
-    image: succulentGarden,
-    rating: 4.6,
-    reviewCount: 91,
-    description: "Assorted succulents in wooden box, long-lasting and low maintenance.",
-    category: "plants"
+    name: "Pink Teddy Bear & Red Roses Gift Set",
+    price: 9500,
+    image: succulentGarden, // Note: Update the image import when available
+    rating: 4.9,
+    reviewCount: 76,
+    isPopular: true,
+    isSameDay: true,
+    description: "Adorable pink teddy bear paired with a dozen red roses, perfect for birthdays, anniversaries, or to show someone special you care.",
+    category: "gift-sets"
   },
   {
     id: "11",
@@ -154,14 +156,15 @@ export const products: Product[] = [
   },
   {
     id: "12",
-    name: "Wildflower Meadow",
-    price: 1750,
-    image: wildflowerMeadow,
-    rating: 4.5,
-    reviewCount: 64,
+    name: "Luxury Roses Gift Box",
+    price: 12500,
+    image: wildflowerMeadow, // Note: Update the image import when available
+    rating: 4.9,
+    reviewCount: 89,
+    isPopular: true,
     isSameDay: true,
-    description: "Rustic wildflower mix with daisies and cosmos, country charm.",
-    category: "bouquets"
+    description: "An exquisite collection of premium roses in a luxurious gift box, featuring a mix of red, pink, and white roses, elegantly arranged with seasonal foliage. Perfect for anniversaries, Valentine's Day, or to make a grand romantic gesture.",
+    category: "gift-sets"
   },
   {
     id: "13",
@@ -176,37 +179,38 @@ export const products: Product[] = [
   },
   {
     id: "14",
-    name: "Chrysanthemum Cluster",
-    price: 1950,
-    image: chrysanthemumCluster,
-    rating: 4.6,
-    reviewCount: 73,
+    name: "Romantic Red Roses & Teddy Bear Set",
+    price: 6300,
+    image: chrysanthemumCluster, // Note: You might want to update the image import to match the new product
+    rating: 4.8,
+    reviewCount: 64,
     isSameDay: true,
-    description: "Colorful chrysanthemums in yellow, orange, and purple.",
-    category: "bouquets"
+    description: "A classic romantic gift set featuring a dozen red roses and a premium teddy bear, perfect for anniversaries, Valentine's Day, or to express your love.",
+    category: "gift-sets"
   },
   {
     id: "15",
-    name: "Exotic Protea Collection",
+    name: "Exotic Red Roses Collection",
     price: 5500,
     originalPrice: 6800,
     image: exoticProtea,
     rating: 4.9,
     reviewCount: 56,
     isPopular: true,
-    description: "Rare protea flowers, dramatic and unique luxury arrangement.",
+    description: "Rare red roses flowers, dramatic and unique luxury arrangement.",
     category: "roses"
   },
   {
     id: "16",
-    name: "Peace Lily Plant",
-    price: 2400,
-    image: peaceLily,
-    rating: 4.7,
-    reviewCount: 102,
+    name: "Premium Red Roses & Fine Wine Set",
+    price: 8000,
+    image: peaceLily, // Note: You might want to update the image import to match the new product
+    rating: 4.9,
+    reviewCount: 48,
+    isPopular: true,
     isSameDay: true,
-    description: "Indoor peace lily in decorative pot, air-purifying and elegant.",
-    category: "plants"
+    description: "An exquisite gift set featuring a dozen premium red roses paired with a fine bottle of wine, elegantly presented in a luxury gift box. Perfect for anniversaries, romantic occasions, or to make a lasting impression.",
+    category: "gift-sets"
   }
 ];
 
