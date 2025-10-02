@@ -20,10 +20,10 @@ const Hero = () => {
     },
     {
       image: coralDreams,
-      alt: "Stunning coral dreams bouquet with mixed flowers",
-      title: "Coral Dreams",
-      subtitle: "Vibrant Collection",
-      description: "Discover our vibrant coral collection featuring stunning mixed arrangements that capture the essence of tropical beauty and warmth."
+      alt: "Diverse rose bouquets collection with special offers",
+      title: "Rose Collection",
+      subtitle: "Special Deals",
+      description: "Explore our diverse rose bouquets in every color and style! From classic red to exotic rainbow roses - now with up to 30% off selected arrangements. Perfect for anniversaries, proposals, and expressing your love."
     },
     {
       image: exoticProtea,
