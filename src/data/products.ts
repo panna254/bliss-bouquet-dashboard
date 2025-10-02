@@ -122,14 +122,15 @@ export const products: Product[] = [
   },
   {
     id: "9",
-    name: "Pink Peony Perfection",
+    name: "Premium Red Roses & Fine Wine Gift Set",
     price: 13500,
-    image: pinkPeony,
+    image: pinkPeony, // Note: Update the image import when available
     rating: 4.9,
-    reviewCount: 143,
+    reviewCount: 112,
     isPopular: true,
-    description: "Luxury pink peonies in full bloom, romantic and sophisticated.",
-    category: "bouquets"
+    isSameDay: true,
+    description: "An exquisite gift set featuring a dozen premium red roses paired with a fine bottle of wine, elegantly presented in a luxury gift box. Perfect for anniversaries, romantic occasions, or to make a lasting impression.",
+    category: "gift-sets"
   },
   {
     id: "10",
