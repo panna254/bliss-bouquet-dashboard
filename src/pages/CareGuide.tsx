@@ -1,25 +1,12 @@
-import { Link } from "react-router-dom";
-import { Droplets, Sun, Scissors, ThermometerSun, ArrowLeft, Flower2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Droplets, Sun, Scissors, ThermometerSun, Flower2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import Header from "@/components/Header";
 
 const CareGuide = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-accent/5 via-background to-primary/5">
-      <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between">
-          <Link to="/">
-            <h1 className="text-2xl font-heading font-bold text-primary">Bliss Bouquet Kenya</h1>
-          </Link>
-          <Link to="/">
-            <Button variant="ghost" size="sm">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Home
-            </Button>
-          </Link>
-        </div>
-      </header>
+      <Header />
 
       <main className="container py-12 animate-fade-in">
         <div className="max-w-4xl mx-auto space-y-8">
