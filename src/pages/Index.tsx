@@ -170,10 +170,10 @@ const Index = () => {
             <div className="space-y-4">
               <h4 className="font-semibold text-foreground">Support</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-primary transition-elegant">Contact Us</a></li>
-                <li><a href="#" className="hover:text-primary transition-elegant">Delivery Info</a></li>
-                <li><a href="#" className="hover:text-primary transition-elegant">Care Guide</a></li>
-                <li><a href="#" className="hover:text-primary transition-elegant">Returns</a></li>
+                <li><a href="/contact-us" className="hover:text-primary transition-elegant">Contact Us</a></li>
+                <li><a href="/delivery-info" className="hover:text-primary transition-elegant">Delivery Info</a></li>
+                <li><a href="/care-guide" className="hover:text-primary transition-elegant">Care Guide</a></li>
+                <li><a href="/returns" className="hover:text-primary transition-elegant">Returns</a></li>
               </ul>
             </div>
             <div className="space-y-4">
