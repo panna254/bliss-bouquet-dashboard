@@ -13,24 +13,24 @@ const Hero = () => {
   const slides = [
     {
       image: heroImage,
-      alt: "Beautiful coral pink roses and white peonies arrangement",
-      title: "Beautiful Flowers",
-      subtitle: "Delivered Fresh",
-      description: "Premium arrangements crafted with love for every special moment. From elegant roses to seasonal bouquets, we bring joy to your doorstep."
+      alt: "Fresh flower delivery Nairobi Kenya - Premium roses and peonies arrangement by Bliss Bouquet Kenya",
+      title: "Fresh Flowers Nairobi",
+      subtitle: "Same Day Delivery",
+      description: "Premium fresh flower delivery in Nairobi, Kenya. Expert florist crafting beautiful arrangements for weddings, birthdays, and special occasions. Order online for same-day delivery across Kenya."
     },
     {
       image: coralDreams,
-      alt: "Diverse rose bouquets collection with special offers",
-      title: "Rose Collection",
-      subtitle: "Special Deals",
-      description: "Explore our diverse rose bouquets in every color and style! From classic red to exotic rainbow roses - now with up to 30% off selected arrangements. Perfect for anniversaries, proposals, and expressing your love."
+      alt: "Rose bouquets Kenya - Wedding flowers and birthday arrangements with special discounts",
+      title: "Kenya Rose Collection",
+      subtitle: "Discount on Special Deals",
+      description: "Discover Kenya's finest rose bouquets! Wedding flowers, birthday arrangements, Valentine roses in red, pink, white. Premium florist in Nairobi with same-day delivery. Save 30% on selected arrangements."
     },
     {
       image: exoticProtea,
-      alt: "Exotic protea flowers in artistic arrangement",
-      title: "Exotic Protea",
-      subtitle: "Unique Artistry",
-      description: "Experience the extraordinary with our exotic protea arrangements, featuring rare and dramatic flowers for those who appreciate unique beauty."
+      alt: "Exotic protea flowers Kenya - Unique wedding bouquets and corporate arrangements Nairobi",
+      title: "Exotic Flowers Kenya",
+      subtitle: "Premium Arrangements",
+      description: "Unique exotic flower arrangements in Kenya. Protea, lilies, and rare blooms for corporate events, luxury weddings, and special occasions. Professional florist serving Nairobi and surrounding areas."
     }
   ];
 
@@ -116,7 +116,7 @@ const Hero = () => {
 
       {/* Seasonal Banner */}
       <div className="relative z-10 bg-accent/90 backdrop-blur-sm text-accent-foreground text-center py-3 text-sm font-medium animate-fade-in">
-        🌸 Welcome to Bliss Bouquet Kenya! Experience the freshest flowers, beautiful arrangements, and heartfelt service—delivered with love across Kenya.
+        🌸 Kenya's Premier Florist | Same-Day Flower Delivery Nairobi | Wedding Bouquets | Birthday Flowers | Fresh Roses & Lilies | Call +254743491613
       </div>
       
       {/* Hero Content */}
@@ -151,14 +151,14 @@ const Hero = () => {
                   size="hero" 
                   className="animate-fade-in bg-primary hover:bg-primary/90 text-white shadow-xl"
                 >
-                  Shop Fresh Flowers
+                  Order Fresh Flowers Kenya
                 </Button>
                 <Button 
                   variant="outline" 
                   size="lg" 
                   className="animate-fade-in bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 shadow-xl"
                 >
-                  Create Custom Bouquet
+                  Custom Wedding Bouquets
                 </Button>
               </div>
 

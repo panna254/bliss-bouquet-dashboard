@@ -10,5 +10,32 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
+# Robots.txt for Bliss Bouquet Kenya - Premium Flower Delivery Service
 User-agent: *
 Allow: /
+
+# Allow all search engines to crawl important pages
+Allow: /flowers
+Allow: /bouquets
+Allow: /wedding-flowers
+Allow: /birthday-flowers
+Allow: /delivery-info
+Allow: /contact-us
+Allow: /care-guide
+
+# Block admin and private areas
+Disallow: /admin/
+Disallow: /private/
+Disallow: /*.json$
+Disallow: /api/
+
+# Allow CSS and JS files for better rendering
+Allow: /assets/
+Allow: /*.css
+Allow: /*.js
+
+# Sitemap location
+Sitemap: https://blissbouquetkenya.com/sitemap.xml
+
+# Crawl delay (optional - helps with server load)
+Crawl-delay: 1

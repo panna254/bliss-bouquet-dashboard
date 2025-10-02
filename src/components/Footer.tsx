@@ -16,25 +16,25 @@ const Footer = () => {
               <h3 className="font-heading font-semibold text-foreground">Bliss Bouquet Kenya</h3>
             </div>
             <p className="text-sm text-muted-foreground">
-              Premium flowers and gifts delivered fresh to your doorstep with love and care.
+              Kenya's premier florist delivering fresh flowers in Nairobi. Same-day delivery for weddings, birthdays, corporate events. Premium roses, lilies, and custom bouquets since 2020.
             </p>
           </div>
           <div className="space-y-4">
-            <h4 className="font-semibold text-foreground">Quick Links</h4>
+            <h4 className="font-semibold text-foreground">Flower Categories</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#featured" className="hover:text-primary transition-elegant">Featured</a></li>
-              <li><a href="#categories" className="hover:text-primary transition-elegant">Categories</a></li>
-              <li><a href="#occasions" className="hover:text-primary transition-elegant">Occasions</a></li>
-              <li><a href="#products" className="hover:text-primary transition-elegant">All Products</a></li>
+              <li><a href="#featured" className="hover:text-primary transition-elegant">Fresh Flowers Kenya</a></li>
+              <li><a href="#categories" className="hover:text-primary transition-elegant">Wedding Bouquets</a></li>
+              <li><a href="#occasions" className="hover:text-primary transition-elegant">Birthday Flowers</a></li>
+              <li><a href="#products" className="hover:text-primary transition-elegant">Rose Arrangements</a></li>
             </ul>
           </div>
           <div className="space-y-4">
-            <h4 className="font-semibold text-foreground">Support</h4>
+            <h4 className="font-semibold text-foreground">Delivery Services</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/contact-us" className="hover:text-primary transition-elegant">Contact Us</Link></li>
-              <li><Link to="/delivery-info" className="hover:text-primary transition-elegant">Delivery Info</Link></li>
-              <li><Link to="/care-guide" className="hover:text-primary transition-elegant">Care Guide</Link></li>
-              <li><Link to="/returns" className="hover:text-primary transition-elegant">Returns</Link></li>
+              <li><Link to="/contact-us" className="hover:text-primary transition-elegant">Contact Florist Nairobi</Link></li>
+              <li><Link to="/delivery-info" className="hover:text-primary transition-elegant">Same Day Delivery Kenya</Link></li>
+              <li><Link to="/care-guide" className="hover:text-primary transition-elegant">Flower Care Guide</Link></li>
+              <li><Link to="/returns" className="hover:text-primary transition-elegant">Returns & Refunds</Link></li>
             </ul>
           </div>
           <div className="space-y-4">
