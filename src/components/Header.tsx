@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, Search, Menu, Heart } from "lucide-react";
+import { ShoppingCart, Search, Menu, Heart, X } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import SearchBar from "./SearchBar";
 import CartPanel from "./CartPanel";
 
@@ -11,6 +12,7 @@ const Header = () => {
   const { getCartCount, toggleCart } = useCart();
   const cartCount = getCartCount();
   const [searchOpen, setSearchOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -102,7 +104,12 @@ const Header = () => {
           </Button>
 
           {/* Mobile Menu */}
-          <Button variant="ghost" size="icon" className="md:hidden hover:bg-muted">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="md:hidden hover:bg-muted"
+            onClick={() => setMobileMenuOpen(true)}
+          >
             <Menu className="h-5 w-5" />
           </Button>
         </div>
@@ -120,6 +127,129 @@ const Header = () => {
       
       {/* Cart Panel */}
       <CartPanel />
+      
+      {/* Mobile Menu Panel */}
+      <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+        <SheetContent side="left" className="w-full sm:max-w-xs">
+          <SheetHeader className="pb-4">
+            <SheetTitle className="flex items-center gap-2 text-base">
+              <img 
+                src="/logo.png" 
+                alt="Bliss Bouquet Kenya" 
+                className="h-6 w-auto"
+              />
+              <span className="text-sm font-medium">Menu</span>
+            </SheetTitle>
+          </SheetHeader>
+          
+          <div className="flex flex-col space-y-4 mt-4">
+            {/* Navigation Links */}
+            <nav className="space-y-1">
+              <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Navigation</h4>
+              <button 
+                className="w-full text-left text-sm font-medium text-foreground hover:text-primary hover:bg-muted/50 transition-elegant py-2 px-2 rounded-md"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Fresh Flowers
+              </button>
+              <button 
+                onClick={() => {
+                  scrollToSection('featured');
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full text-left text-sm font-medium text-foreground hover:text-primary hover:bg-muted/50 transition-elegant py-2 px-2 rounded-md"
+              >
+                Bouquets
+              </button>
+              <button 
+                onClick={() => {
+                  scrollToSection('occasions');
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full text-left text-sm font-medium text-foreground hover:text-primary hover:bg-muted/50 transition-elegant py-2 px-2 rounded-md"
+              >
+                Plants
+              </button>
+              <button 
+                onClick={() => {
+                  scrollToSection('products');
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full text-left text-sm font-medium text-foreground hover:text-primary hover:bg-muted/50 transition-elegant py-2 px-2 rounded-md"
+              >
+                Gifts
+              </button>
+              <button 
+                onClick={() => {
+                  scrollToSection('hero');
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full text-left text-sm font-medium text-foreground hover:text-primary hover:bg-muted/50 transition-elegant py-2 px-2 rounded-md"
+              >
+                Same-Day Delivery
+              </button>
+            </nav>
+            
+            {/* Action Buttons */}
+            <div className="border-t border-border pt-4 space-y-2">
+              <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Actions</h4>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="w-full justify-start gap-2 h-8 text-sm"
+                onClick={() => {
+                  setSearchOpen(true);
+                  setMobileMenuOpen(false);
+                }}
+              >
+                <Search className="h-4 w-4" />
+                Search
+              </Button>
+              
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="w-full justify-start gap-2 h-8 text-sm"
+                onClick={() => {
+                  toggleCart();
+                  setMobileMenuOpen(false);
+                }}
+              >
+                <ShoppingCart className="h-4 w-4" />
+                Cart ({cartCount})
+              </Button>
+              
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="w-full justify-start gap-2 h-8 text-sm"
+              >
+                <Heart className="h-4 w-4" />
+                Wishlist
+              </Button>
+            </div>
+            
+            {/* Contact Info */}
+            <div className="border-t border-border pt-4 space-y-2">
+              <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Contact</h4>
+              <div className="space-y-1">
+                <a href="tel:0743491613" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-elegant py-1">
+                  <span className="text-xs">📞</span>
+                  0743 491 613
+                </a>
+                <a href="mailto:blissbouquet187@gmail.com" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-elegant py-1">
+                  <span className="text-xs">✉️</span>
+                  blissbouquet187@gmail.com
+                </a>
+                <p className="flex items-center gap-2 text-xs text-muted-foreground py-1">
+                  <span className="text-xs">🕒</span>
+                  Mon-Sat: 8AM-8PM
+                </p>
+              </div>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </header>
   );
 };
