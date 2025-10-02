@@ -122,13 +122,13 @@ export const products: Product[] = [
   },
   {
     id: "9",
-    name: "Romantic Proposal Gift Set",
+    name: "Pink Peony Perfection",
     price: 13500,
     image: pinkPeony,
     rating: 4.9,
     reviewCount: 143,
     isPopular: true,
-    description: "Exclusive romantic gift set featuring a dozen premium red roses and a fine bottle of red wine, perfect for birthdays, anniversaries, or that special proposal moment.",
+    description: "Luxury pink peonies in full bloom, romantic and sophisticated.",
     category: "bouquets"
   },
   {
