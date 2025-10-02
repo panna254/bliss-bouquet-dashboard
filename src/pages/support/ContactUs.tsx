@@ -2,11 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, Phone, MapPin, Clock } from "lucide-react";
+import Layout from "@/components/Layout";
 
 const ContactUs = () => {
   return (
-    <div className="container py-16">
-      <div className="max-w-4xl mx-auto">
+    <Layout>
+      <div className="max-w-4xl mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-heading font-bold text-foreground mb-4">Contact Us</h1>
           <p className="text-lg text-muted-foreground">
@@ -115,7 +116,7 @@ const ContactUs = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 

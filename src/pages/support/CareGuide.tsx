@@ -1,5 +1,6 @@
 import { Droplets, Sun, Scissors, Leaf, Zap, Droplet } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import Layout from "@/components/Layout";
 
 const CareGuide = () => {
   const careTips = [
@@ -69,7 +70,8 @@ const CareGuide = () => {
   ];
 
   return (
-    <div className="container py-16">
+    <Layout>
+      <div className="container py-16">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-heading font-bold text-foreground mb-4">Flower Care Guide</h1>
@@ -196,8 +198,9 @@ const CareGuide = () => {
             </a>
           </section>
         </div>
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 

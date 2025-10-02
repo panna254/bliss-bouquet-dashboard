@@ -1,5 +1,6 @@
-import { RefreshCw, Package, Phone, Mail, AlertTriangle } from "lucide-react";
+import { RefreshCw, AlertTriangle, CheckCircle, HelpCircle, Package, Phone, Mail } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import Layout from "@/components/Layout";
 
 const Returns = () => {
   const returnReasons = [
@@ -42,7 +43,8 @@ const Returns = () => {
   ];
 
   return (
-    <div className="container py-16">
+    <Layout>
+      <div className="container py-16">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-heading font-bold text-foreground mb-4">Returns & Exchanges</h1>
@@ -183,8 +185,9 @@ const Returns = () => {
             </div>
           </section>
         </div>
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
