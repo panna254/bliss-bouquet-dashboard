@@ -114,12 +114,14 @@ export const products: Product[] = [
   },
   {
     id: "8",
-    name: "Tropical Paradise Mix",
-    price: 3500,
-    image: tropicalParadise,
+    name: "Red Rose Flower Bouquet",
+    price: 3000,
+    image: tropicalParadise, // Note: Update the image when you have a red rose bouquet image
     rating: 4.8,
     reviewCount: 85,
-    description: "Exotic tropical flowers including bird of paradise and anthuriums.",
+    isSameDay: true,
+    isPopular: true,
+    description: "A classic bouquet of fresh red roses, symbolizing deep love and passion. Each rose is carefully selected and arranged to create a stunning presentation that's perfect for anniversaries, Valentine's Day, or to express your deepest feelings.",
     category: "bouquets"
   },
   {
