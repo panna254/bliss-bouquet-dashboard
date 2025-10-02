@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
 import WhatsAppButton from "./components/WhatsAppButton";
 import Index from "./pages/Index";
@@ -20,19 +20,17 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
+        <Router>
           <Routes>
             <Route path="/" element={<Index />} />
             {/* Support Pages */}
             <Route path="/contact-us" element={<ContactUs />} />
-            <Route path="/delivery-info" element={<DeliveryInfo />} />
             <Route path="/care-guide" element={<CareGuide />} />
             <Route path="/returns" element={<Returns />} />
             {/* ADD ALL OTHER CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-          <WhatsAppButton />
-        </BrowserRouter>
+        </Router>
       </TooltipProvider>
     </CartProvider>
   </QueryClientProvider>
