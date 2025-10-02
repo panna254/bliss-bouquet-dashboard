@@ -5,13 +5,11 @@ import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import SearchBar from "./SearchBar";
-import Cart from "./Cart";
 
 const Header = () => {
   const { getCartCount } = useCart();
   const cartCount = getCartCount();
   const [searchOpen, setSearchOpen] = useState(false);
-  const [cartOpen, setCartOpen] = useState(false);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -85,12 +83,7 @@ const Header = () => {
           </Button>
 
           {/* Cart */}
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="relative hover:bg-muted"
-            onClick={() => setCartOpen(true)}
-          >
+          <Button variant="ghost" size="icon" className="relative hover:bg-muted">
             <ShoppingCart className="h-5 w-5" />
             {cartCount > 0 && (
               <Badge 
@@ -101,9 +94,6 @@ const Header = () => {
               </Badge>
             )}
           </Button>
-          
-          {/* Cart Sidebar */}
-          {cartOpen && <Cart onClose={() => setCartOpen(false)} />}
 
           {/* Mobile Menu */}
           <Button variant="ghost" size="icon" className="md:hidden hover:bg-muted">

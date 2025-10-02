@@ -17,6 +17,7 @@ interface ProductCardProps {
   isPopular?: boolean;
   isSameDay?: boolean;
   description: string;
+  category: string;
 }
 
 const ProductCard = ({ 
@@ -29,7 +30,8 @@ const ProductCard = ({
   reviewCount, 
   isPopular, 
   isSameDay, 
-  description 
+  description,
+  category 
 }: ProductCardProps) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -37,7 +39,7 @@ const ProductCard = ({
   const { toast } = useToast();
 
   const handleAddToCart = () => {
-    const product = { id, name, price, originalPrice, image, rating, reviewCount, isPopular, isSameDay, description, category: "bouquets" };
+    const product = { id, name, price, originalPrice, image, rating, reviewCount, isPopular, isSameDay, description, category };
     addToCart(product);
   };
 
