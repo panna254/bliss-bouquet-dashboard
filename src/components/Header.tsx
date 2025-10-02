@@ -21,14 +21,14 @@ const Header = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container flex h-24 items-center justify-between">
         {/* Logo - Always visible, including mobile */}
         <div className="flex items-center space-x-2">
           <a href="/" className="flex items-center space-x-2">
             <img 
               src="/logo.png" 
               alt="Bliss Bouquet Kenya" 
-              className="h-12 w-auto transition-all duration-200 hover:scale-105"
+              className="h-20 md:h-24 lg:h-28 w-auto transition-all duration-200 hover:scale-105"
             />
           </a>
         </div>

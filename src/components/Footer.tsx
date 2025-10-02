@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Phone, Mail, Clock, MapPin } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -6,7 +7,14 @@ const Footer = () => {
       <div className="container">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
-            <h3 className="font-heading font-semibold text-foreground">Bliss Bouquet Kenya</h3>
+            <div className="flex flex-col items-start space-y-3">
+              <img 
+                src="/logo.png" 
+                alt="Bliss Bouquet Kenya" 
+                className="h-16 w-auto"
+              />
+              <h3 className="font-heading font-semibold text-foreground">Bliss Bouquet Kenya</h3>
+            </div>
             <p className="text-sm text-muted-foreground">
               Premium flowers and gifts delivered fresh to your doorstep with love and care.
             </p>
@@ -31,11 +39,23 @@ const Footer = () => {
           </div>
           <div className="space-y-4">
             <h4 className="font-semibold text-foreground">Contact</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>📞 <a href="tel:0743491613" className="hover:text-primary transition-elegant">0743491613</a></li>
-              <li>✉️ <a href="mailto:blissbouquet187@gmail.com" className="hover:text-primary transition-elegant">blissbouquet187@gmail.com</a></li>
-              <li>🕒 Mon-Sat: 8AM-8PM</li>
-              <li>📍 Same-day delivery available</li>
+            <ul className="space-y-3 text-sm text-muted-foreground">
+              <li className="flex items-center gap-2">
+                <Phone className="h-4 w-4 text-primary flex-shrink-0" />
+                <a href="tel:0743491613" className="hover:text-primary transition-elegant">0743 491 613</a>
+              </li>
+              <li className="flex items-center gap-2">
+                <Mail className="h-4 w-4 text-primary flex-shrink-0" />
+                <a href="mailto:blissbouquet187@gmail.com" className="hover:text-primary transition-elegant">blissbouquet187@gmail.com</a>
+              </li>
+              <li className="flex items-center gap-2">
+                <Clock className="h-4 w-4 text-primary flex-shrink-0" />
+                <span>Mon-Sat: 8AM-8PM</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-primary flex-shrink-0" />
+                <span>Same-day delivery available</span>
+              </li>
             </ul>
           </div>
         </div>
