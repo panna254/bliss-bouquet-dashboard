@@ -134,12 +134,12 @@ const Hero = () => {
               </Badge>
 
               {/* Headline */}
-              <div className="space-y-6 animate-fade-in" key={currentSlide}>
-                <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-white leading-tight drop-shadow-lg">
+              <div className="space-y-4 animate-fade-in" key={currentSlide}>
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-white leading-tight drop-shadow-lg">
                   {currentSlideData.title}
                   <span className="block text-accent">{currentSlideData.subtitle}</span>
                 </h1>
-                <p className="text-xl md:text-2xl text-white/90 max-w-3xl font-body drop-shadow-md">
+                <p className="text-lg md:text-xl text-white/90 max-w-2xl font-body drop-shadow-md leading-relaxed">
                   {currentSlideData.description}
                 </p>
               </div>
@@ -163,25 +163,25 @@ const Hero = () => {
               </div>
 
               {/* Features */}
-              <div className="flex flex-wrap justify-center lg:justify-start gap-8 pt-6 animate-fade-in">
-                <div className="flex items-center gap-3 text-white/90 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
-                  <Truck className="w-5 h-5 text-accent" />
-                  <span className="text-sm font-medium">Same-Day Delivery</span>
+              <div className="flex flex-wrap justify-center lg:justify-start gap-6 pt-4 animate-fade-in">
+                <div className="flex items-center gap-2 text-white/90 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5">
+                  <Truck className="w-4 h-4 text-accent" />
+                  <span className="text-xs font-medium">Same-Day Delivery</span>
                 </div>
-                <div className="flex items-center gap-3 text-white/90 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
-                  <Clock className="w-5 h-5 text-accent" />
-                  <span className="text-sm font-medium">Fresh Guarantee</span>
+                <div className="flex items-center gap-2 text-white/90 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5">
+                  <Clock className="w-4 h-4 text-accent" />
+                  <span className="text-xs font-medium">Fresh Guarantee</span>
                 </div>
-                <div className="flex items-center gap-3 text-white/90 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
-                  <Heart className="w-5 h-5 text-accent" />
-                  <span className="text-sm font-medium">Handcrafted with Love</span>
+                <div className="flex items-center gap-2 text-white/90 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5">
+                  <Heart className="w-4 h-4 text-accent" />
+                  <span className="text-xs font-medium">Handcrafted with Love</span>
                 </div>
               </div>
 
               {/* Floating price tag */}
-              <div className="inline-block bg-white/95 backdrop-blur rounded-xl p-4 shadow-2xl animate-bounce-in">
-                <p className="text-sm text-muted-foreground">Premium bouquets starting from</p>
-                <p className="text-3xl font-heading font-bold text-primary">Ksh 3,000</p>
+              <div className="inline-block bg-white/95 backdrop-blur rounded-lg p-3 shadow-2xl animate-bounce-in">
+                <p className="text-xs text-muted-foreground">Premium bouquets starting from</p>
+                <p className="text-2xl font-heading font-bold text-primary">Ksh 3,000</p>
               </div>
             </div>
           </div>
