@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
-        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   
-  <!-- Homepage -->
+  <!-- Homepage (Main SPA Entry Point) -->
   <url>
     <loc>https://blissbouquetkenya.com/</loc>
-    <lastmod>2025-01-02</lastmod>
+    <lastmod>2025-01-02T00:00:00+00:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -16,141 +15,164 @@
     </image:image>
   </url>
 
-  <!-- Product Categories -->
+  <!-- Main Information Pages -->
   <url>
-    <loc>https://blissbouquetkenya.com/fresh-flowers</loc>
-    <lastmod>2025-01-02</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://blissbouquetkenya.com/bouquets</loc>
-    <lastmod>2025-01-02</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://blissbouquetkenya.com/wedding-flowers</loc>
-    <lastmod>2025-01-02</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://blissbouquetkenya.com/birthday-flowers</loc>
-    <lastmod>2025-01-02</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://blissbouquetkenya.com/roses</loc>
-    <lastmod>2025-01-02</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://blissbouquetkenya.com/lilies</loc>
-    <lastmod>2025-01-02</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://blissbouquetkenya.com/valentine-flowers</loc>
-    <lastmod>2025-01-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://blissbouquetkenya.com/anniversary-flowers</loc>
-    <lastmod>2025-01-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://blissbouquetkenya.com/corporate-flowers</loc>
-    <lastmod>2025-01-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://blissbouquetkenya.com/funeral-flowers</loc>
-    <lastmod>2025-01-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <!-- Service Pages -->
-  <url>
-    <loc>https://blissbouquetkenya.com/same-day-delivery</loc>
-    <lastmod>2025-01-02</lastmod>
+    <loc>https://blissbouquetkenya.com/contact-us</loc>
+    <lastmod>2025-01-02T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://blissbouquetkenya.com/delivery-info</loc>
-    <lastmod>2025-01-02</lastmod>
+    <lastmod>2025-01-02T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://blissbouquetkenya.com/care-guide</loc>
-    <lastmod>2025-01-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <!-- Contact & Info Pages -->
-  <url>
-    <loc>https://blissbouquetkenya.com/contact-us</loc>
-    <lastmod>2025-01-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://blissbouquetkenya.com/about-us</loc>
-    <lastmod>2025-01-02</lastmod>
+    <lastmod>2025-01-02T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://blissbouquetkenya.com/returns</loc>
-    <lastmod>2025-01-02</lastmod>
+    <lastmod>2025-01-02T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
 
-  <!-- Location-based pages -->
+  <!-- Product Category Pages -->
+  <url>
+    <loc>https://blissbouquetkenya.com/roses</loc>
+    <lastmod>2025-01-02T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://blissbouquetkenya.com/bouquets</loc>
+    <lastmod>2025-01-02T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://blissbouquetkenya.com/gift-sets</loc>
+    <lastmod>2025-01-02T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://blissbouquetkenya.com/plants</loc>
+    <lastmod>2025-01-02T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Occasion-Based Pages -->
+  <url>
+    <loc>https://blissbouquetkenya.com/birthday-flowers</loc>
+    <lastmod>2025-01-02T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://blissbouquetkenya.com/anniversary-flowers</loc>
+    <lastmod>2025-01-02T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://blissbouquetkenya.com/wedding-flowers</loc>
+    <lastmod>2025-01-02T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://blissbouquetkenya.com/sympathy-flowers</loc>
+    <lastmod>2025-01-02T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://blissbouquetkenya.com/congratulations-flowers</loc>
+    <lastmod>2025-01-02T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://blissbouquetkenya.com/new-baby-flowers</loc>
+    <lastmod>2025-01-02T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://blissbouquetkenya.com/corporate-flowers</loc>
+    <lastmod>2025-01-02T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Service Pages -->
+  <url>
+    <loc>https://blissbouquetkenya.com/same-day-delivery</loc>
+    <lastmod>2025-01-02T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Location-Based SEO Pages -->
   <url>
     <loc>https://blissbouquetkenya.com/flower-delivery-nairobi</loc>
-    <lastmod>2025-01-02</lastmod>
+    <lastmod>2025-01-02T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://blissbouquetkenya.com/florist-nairobi</loc>
-    <lastmod>2025-01-02</lastmod>
+    <lastmod>2025-01-02T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://blissbouquetkenya.com/flower-shop-kenya</loc>
-    <lastmod>2025-01-02</lastmod>
+    <lastmod>2025-01-02T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+  </url>
+
+  <!-- Seasonal/Holiday Pages -->
+  <url>
+    <loc>https://blissbouquetkenya.com/valentine-flowers</loc>
+    <lastmod>2025-01-02T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://blissbouquetkenya.com/mothers-day-flowers</loc>
+    <lastmod>2025-01-02T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://blissbouquetkenya.com/christmas-flowers</loc>
+    <lastmod>2025-01-02T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
 
 </urlset>
