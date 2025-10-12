@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bliss Bouquet Kenya - Indexing Status Checker</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .url-check { margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        .indexed { background-color: #d4edda; border-color: #c3e6cb; }
+        .not-indexed { background-color: #f8d7da; border-color: #f5c6cb; }
+        .checking { background-color: #fff3cd; border-color: #ffeaa7; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .status { font-weight: bold; }
+        .instructions { background: #e7f3ff; padding: 15px; border-radius: 5px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Bliss Bouquet Kenya - Indexing Status Checker</h1>
+    
+    <div class="instructions">
+        <h3>📋 How to Use This Tool:</h3>
+        <ol>
+            <li>Click "Check All URLs" to test indexing status</li>
+            <li>Green = Indexed ✅, Red = Not Indexed ❌, Yellow = Checking ⏳</li>
+            <li>For non-indexed URLs, submit them manually in Google Search Console</li>
+        </ol>
+    </div>
+
+    <button onclick="checkAllUrls()">🚀 Check All URLs for Indexing</button>
+    
+    <div id="results">
+        <h3>📊 Your Website URLs:</h3>
+        <div id="url-list">
+            <!-- URLs will be populated here -->
+        </div>
+    </div>
+
+    <div class="instructions">
+        <h3>🎯 Next Steps Based on Results:</h3>
+        <ul>
+            <li><strong>If 0-2 URLs indexed:</strong> Set up Google Search Console immediately</li>
+            <li><strong>If 3-6 URLs indexed:</strong> Submit remaining URLs manually</li>
+            <li><strong>If 7+ URLs indexed:</strong> Focus on content optimization and local SEO</li>
+        </ul>
+        
+        <h4>🔗 Quick Links:</h4>
+        <ul>
+            <li><a href="https://search.google.com/search-console/" target="_blank">Google Search Console</a></li>
+            <li><a href="https://www.bing.com/webmasters/" target="_blank">Bing Webmaster Tools</a></li>
+            <li><a href="https://search.google.com/test/rich-results" target="_blank">Rich Results Test</a></li>
+            <li><a href="https://pagespeed.web.dev/" target="_blank">PageSpeed Insights</a></li>
+        </ul>
+    </div>
+
+    <script>
+        const urls = [
+            'https://blissbouquetkenya.com/',
+            'https://blissbouquetkenya.com/contact-us',
+            'https://blissbouquetkenya.com/delivery-info',
+            'https://blissbouquetkenya.com/care-guide',
+            'https://blissbouquetkenya.com/returns',
+            'https://blissbouquetkenya.com/roses',
+            'https://blissbouquetkenya.com/bouquets',
+            'https://blissbouquetkenya.com/birthday-flowers',
+            'https://blissbouquetkenya.com/wedding-flowers'
+        ];
+
+        function createUrlElement(url, index) {
+            return `
+                <div id="url-${index}" class="url-check checking">
+                    <strong>${url}</strong>
+                    <div class="status" id="status-${index}">⏳ Checking...</div>
+                    <div id="actions-${index}" style="margin-top: 10px;"></div>
+                </div>
+            `;
+        }
+
+        function checkUrlIndexing(url, index) {
+            // Simulate checking by opening Google search in new tab
+            const searchQuery = `site:${url.replace('https://', '').replace('http://', '')}`;
+            const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
+            
+            // Update status to manual check required
+            setTimeout(() => {
+                const statusElement = document.getElementById(`status-${index}`);
+                const urlElement = document.getElementById(`url-${index}`);
+                const actionsElement = document.getElementById(`actions-${index}`);
+                
+                statusElement.innerHTML = '🔍 Manual Check Required';
+                urlElement.className = 'url-check checking';
+                
+                actionsElement.innerHTML = `
+                    <button onclick="window.open('${googleSearchUrl}', '_blank')" style="margin-right: 10px;">
+                        🔍 Check in Google
+                    </button>
+                    <button onclick="markAsIndexed(${index})" style="background: #28a745;">
+                        ✅ Mark as Indexed
+                    </button>
+                    <button onclick="markAsNotIndexed(${index})" style="background: #dc3545;">
+                        ❌ Mark as Not Indexed
+                    </button>
+                `;
+            }, index * 500); // Stagger the checks
+        }
+
+        function markAsIndexed(index) {
+            const statusElement = document.getElementById(`status-${index}`);
+            const urlElement = document.getElementById(`url-${index}`);
+            const actionsElement = document.getElementById(`actions-${index}`);
+            
+            statusElement.innerHTML = '✅ Indexed - Found in Google';
+            urlElement.className = 'url-check indexed';
+            actionsElement.innerHTML = '<em>Great! This page is discoverable in search results.</em>';
+        }
+
+        function markAsNotIndexed(index) {
+            const statusElement = document.getElementById(`status-${index}`);
+            const urlElement = document.getElementById(`url-${index}`);
+            const actionsElement = document.getElementById(`actions-${index}`);
+            
+            statusElement.innerHTML = '❌ Not Indexed - Submit to Search Console';
+            urlElement.className = 'url-check not-indexed';
+            actionsElement.innerHTML = `
+                <em>Action needed: Submit this URL in Google Search Console</em><br>
+                <button onclick="window.open('https://search.google.com/search-console/', '_blank')" style="margin-top: 5px;">
+                    🚀 Open Search Console
+                </button>
+            `;
+        }
+
+        function checkAllUrls() {
+            const urlList = document.getElementById('url-list');
+            urlList.innerHTML = '';
+            
+            urls.forEach((url, index) => {
+                urlList.innerHTML += createUrlElement(url, index);
+            });
+            
+            // Start checking each URL
+            urls.forEach((url, index) => {
+                checkUrlIndexing(url, index);
+            });
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlList = document.getElementById('url-list');
+            urlList.innerHTML = '<p><em>Click "Check All URLs" to start the indexing verification process.</em></p>';
+        });
+    </script>
+</body>
+</html>
