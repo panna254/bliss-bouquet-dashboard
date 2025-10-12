@@ -100,6 +100,84 @@ const CategoryPage = () => {
         ogTitle={config.ogTitle}
         ogDescription={config.ogDescription}
       />
+      
+      {/* Structured Data for Category Page */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": config.ogTitle,
+            "description": config.ogDescription,
+            "url": `https://blissbouquetkenya.com/${category}`,
+            "mainEntity": {
+              "@type": "ItemList",
+              "name": config.ogTitle,
+              "description": config.ogDescription,
+              "numberOfItems": filteredProducts.length,
+              "itemListElement": filteredProducts.slice(0, 10).map((product, index) => ({
+                "@type": "Product",
+                "position": index + 1,
+                "name": product.name,
+                "description": product.description,
+                "image": `https://blissbouquetkenya.com${product.image}`,
+                "offers": {
+                  "@type": "Offer",
+                  "price": product.price,
+                  "priceCurrency": "KES",
+                  "availability": "https://schema.org/InStock",
+                  "seller": {
+                    "@type": "Organization",
+                    "name": "Bliss Bouquet Kenya"
+                  }
+                },
+                "aggregateRating": {
+                  "@type": "AggregateRating",
+                  "ratingValue": product.rating,
+                  "reviewCount": product.reviewCount,
+                  "bestRating": 5,
+                  "worstRating": 1
+                },
+                "brand": {
+                  "@type": "Brand",
+                  "name": "Bliss Bouquet Kenya"
+                },
+                "category": config.category || category?.replace('-', ' ')
+              }))
+            },
+            "breadcrumb": {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://blissbouquetkenya.com/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": config.ogTitle,
+                  "item": `https://blissbouquetkenya.com/${category}`
+                }
+              ]
+            },
+            "provider": {
+              "@type": "LocalBusiness",
+              "name": "Bliss Bouquet Kenya",
+              "url": "https://blissbouquetkenya.com",
+              "telephone": "+254743491613",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Nairobi",
+                "addressCountry": "KE"
+              }
+            }
+          })
+        }}
+      />
+      
       <Header />
       
       <main className="container py-12">

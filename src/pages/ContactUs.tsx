@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
 import Breadcrumb from "@/components/Breadcrumb";
+import StructuredData from "@/components/StructuredData";
 
 const ContactUs = () => {
   return (
@@ -16,6 +17,16 @@ const ContactUs = () => {
         keywords="contact florist Nairobi, flower delivery Kenya contact, Bliss Bouquet Kenya phone, WhatsApp flower delivery, florist contact Nairobi"
         ogTitle="Contact Bliss Bouquet Kenya - Florist Nairobi"
         ogDescription="Contact Kenya's premier florist for fresh flower delivery in Nairobi. Call +254743491613 for same-day delivery, wedding bouquets, birthday flowers."
+      />
+      <StructuredData 
+        type="ContactPage"
+        title="Contact Bliss Bouquet Kenya - Florist Nairobi"
+        description="Contact Kenya's premier florist for fresh flower delivery in Nairobi. Call +254743491613 for same-day delivery, wedding bouquets, birthday flowers."
+        url="https://blissbouquetkenya.com/contact-us"
+        breadcrumbs={[
+          { name: "Home", url: "https://blissbouquetkenya.com/" },
+          { name: "Contact Us", url: "https://blissbouquetkenya.com/contact-us" }
+        ]}
       />
       <Header />
       <Breadcrumb />

@@ -36,6 +36,103 @@ const Index = () => {
         ogTitle="Bliss Bouquet Kenya - Fresh Flowers Delivery Nairobi | Same Day Delivery"
         ogDescription="Premium fresh flowers delivery in Nairobi, Kenya. Same-day delivery, wedding bouquets, birthday flowers. Best florist in Kenya with 30+ arrangements."
       />
+      
+      {/* Enhanced Structured Data for Homepage */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "@id": "https://blissbouquetkenya.com/#organization",
+            "name": "Bliss Bouquet Kenya",
+            "alternateName": "Bliss Bouquet",
+            "description": "Premium fresh flowers delivery service in Nairobi, Kenya. Specializing in same-day flower delivery, wedding bouquets, birthday arrangements, and corporate flowers.",
+            "url": "https://blissbouquetkenya.com",
+            "logo": "https://blissbouquetkenya.com/logo.png",
+            "image": [
+              "https://blissbouquetkenya.com/logo.png"
+            ],
+            "telephone": "+254743491613",
+            "email": "blissbouquet187@gmail.com",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Nairobi",
+              "addressLocality": "Nairobi",
+              "addressRegion": "Nairobi County",
+              "postalCode": "00100",
+              "addressCountry": "KE"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": -1.286389,
+              "longitude": 36.817223
+            },
+            "openingHoursSpecification": [
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                "opens": "08:00",
+                "closes": "20:00"
+              }
+            ],
+            "serviceArea": {
+              "@type": "GeoCircle",
+              "geoMidpoint": {
+                "@type": "GeoCoordinates",
+                "latitude": -1.286389,
+                "longitude": 36.817223
+              },
+              "geoRadius": "50000"
+            },
+            "priceRange": "KSh 1000 - KSh 15000",
+            "currenciesAccepted": "KES",
+            "paymentAccepted": "Cash, Credit Card, Mobile Money",
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": "Flower Arrangements",
+              "itemListElement": displayedProducts.slice(0, 5).map((product, index) => ({
+                "@type": "Offer",
+                "position": index + 1,
+                "itemOffered": {
+                  "@type": "Product",
+                  "name": product.name,
+                  "description": product.description,
+                  "image": `https://blissbouquetkenya.com${product.image}`,
+                  "offers": {
+                    "@type": "Offer",
+                    "price": product.price,
+                    "priceCurrency": "KES",
+                    "availability": "https://schema.org/InStock"
+                  },
+                  "aggregateRating": {
+                    "@type": "AggregateRating",
+                    "ratingValue": product.rating,
+                    "reviewCount": product.reviewCount,
+                    "bestRating": 5,
+                    "worstRating": 1
+                  }
+                }
+              }))
+            },
+            "areaServed": [
+              {
+                "@type": "City",
+                "name": "Nairobi"
+              },
+              {
+                "@type": "Country",
+                "name": "Kenya"
+              }
+            ],
+            "sameAs": [
+              "https://www.facebook.com/blissbouquetkenya",
+              "https://www.instagram.com/blissbouquetkenya"
+            ]
+          })
+        }}
+      />
+      
       <Header />
       <div id="hero">
         <Hero />
