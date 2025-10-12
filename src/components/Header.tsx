@@ -37,35 +37,36 @@ const Header = () => {
 
         {/* Navigation - Hidden on mobile */}
         <nav className="hidden md:flex items-center space-x-8">
-          <button 
+          <a 
+            href="/roses"
             className="text-sm font-medium text-foreground hover:text-primary transition-elegant"
           >
-            Fresh Flowers
-          </button>
-          <button 
-            onClick={() => scrollToSection('featured')}
+            Premium Roses
+          </a>
+          <a 
+            href="/bouquets"
             className="text-sm font-medium text-foreground hover:text-primary transition-elegant"
           >
-            Bouquets
-          </button>
-          <button 
-            onClick={() => scrollToSection('occasions')}
+            Fresh Bouquets
+          </a>
+          <a 
+            href="/birthday-flowers"
             className="text-sm font-medium text-foreground hover:text-primary transition-elegant"
           >
-            Plants
-          </button>
-          <button 
-            onClick={() => scrollToSection('products')}
+            Birthday Flowers
+          </a>
+          <a 
+            href="/wedding-flowers"
             className="text-sm font-medium text-foreground hover:text-primary transition-elegant"
           >
-            Gifts
-          </button>
-          <button 
-            onClick={() => scrollToSection('hero')}
+            Wedding Flowers
+          </a>
+          <a 
+            href="/delivery-info"
             className="text-sm font-medium text-foreground hover:text-primary transition-elegant"
           >
             Same-Day Delivery
-          </button>
+          </a>
         </nav>
 
         {/* Search and Actions */}
@@ -146,48 +147,41 @@ const Header = () => {
             {/* Navigation Links */}
             <nav className="space-y-1">
               <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Navigation</h4>
-              <button 
-                className="w-full text-left text-sm font-medium text-foreground hover:text-primary hover:bg-muted/50 transition-elegant py-2 px-2 rounded-md"
+              <a 
+                href="/roses"
+                className="block w-full text-left text-sm font-medium text-foreground hover:text-primary hover:bg-muted/50 transition-elegant py-2 px-2 rounded-md"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Fresh Flowers
-              </button>
-              <button 
-                onClick={() => {
-                  scrollToSection('featured');
-                  setMobileMenuOpen(false);
-                }}
-                className="w-full text-left text-sm font-medium text-foreground hover:text-primary hover:bg-muted/50 transition-elegant py-2 px-2 rounded-md"
+                Premium Roses
+              </a>
+              <a 
+                href="/bouquets"
+                className="block w-full text-left text-sm font-medium text-foreground hover:text-primary hover:bg-muted/50 transition-elegant py-2 px-2 rounded-md"
+                onClick={() => setMobileMenuOpen(false)}
               >
-                Bouquets
-              </button>
-              <button 
-                onClick={() => {
-                  scrollToSection('occasions');
-                  setMobileMenuOpen(false);
-                }}
-                className="w-full text-left text-sm font-medium text-foreground hover:text-primary hover:bg-muted/50 transition-elegant py-2 px-2 rounded-md"
+                Fresh Bouquets
+              </a>
+              <a 
+                href="/birthday-flowers"
+                className="block w-full text-left text-sm font-medium text-foreground hover:text-primary hover:bg-muted/50 transition-elegant py-2 px-2 rounded-md"
+                onClick={() => setMobileMenuOpen(false)}
               >
-                Plants
-              </button>
-              <button 
-                onClick={() => {
-                  scrollToSection('products');
-                  setMobileMenuOpen(false);
-                }}
-                className="w-full text-left text-sm font-medium text-foreground hover:text-primary hover:bg-muted/50 transition-elegant py-2 px-2 rounded-md"
+                Birthday Flowers
+              </a>
+              <a 
+                href="/wedding-flowers"
+                className="block w-full text-left text-sm font-medium text-foreground hover:text-primary hover:bg-muted/50 transition-elegant py-2 px-2 rounded-md"
+                onClick={() => setMobileMenuOpen(false)}
               >
-                Gifts
-              </button>
-              <button 
-                onClick={() => {
-                  scrollToSection('hero');
-                  setMobileMenuOpen(false);
-                }}
-                className="w-full text-left text-sm font-medium text-foreground hover:text-primary hover:bg-muted/50 transition-elegant py-2 px-2 rounded-md"
+                Wedding Flowers
+              </a>
+              <a 
+                href="/delivery-info"
+                className="block w-full text-left text-sm font-medium text-foreground hover:text-primary hover:bg-muted/50 transition-elegant py-2 px-2 rounded-md"
+                onClick={() => setMobileMenuOpen(false)}
               >
                 Same-Day Delivery
-              </button>
+              </a>
             </nav>
             
             {/* Action Buttons */}

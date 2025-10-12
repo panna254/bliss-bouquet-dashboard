@@ -3,11 +3,22 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
+import Breadcrumb from "@/components/Breadcrumb";
 
 const ContactUs = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+      <SEOHead 
+        title="Contact Bliss Bouquet Kenya - Florist Nairobi | WhatsApp +254743491613"
+        description="Contact Kenya's premier florist for fresh flower delivery in Nairobi. Call +254743491613, email blissbouquet187@gmail.com. Same-day delivery, wedding bouquets, birthday flowers."
+        canonical="https://blissbouquetkenya.com/contact-us"
+        keywords="contact florist Nairobi, flower delivery Kenya contact, Bliss Bouquet Kenya phone, WhatsApp flower delivery, florist contact Nairobi"
+        ogTitle="Contact Bliss Bouquet Kenya - Florist Nairobi"
+        ogDescription="Contact Kenya's premier florist for fresh flower delivery in Nairobi. Call +254743491613 for same-day delivery, wedding bouquets, birthday flowers."
+      />
       <Header />
+      <Breadcrumb />
       <main className="flex-1 container py-12 animate-fade-in">
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="text-center space-y-4">

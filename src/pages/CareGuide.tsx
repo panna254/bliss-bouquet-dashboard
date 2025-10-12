@@ -3,11 +3,22 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
+import Breadcrumb from "@/components/Breadcrumb";
 
 const CareGuide = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-accent/5 via-background to-primary/5">
+      <SEOHead 
+        title="Flower Care Guide Kenya | How to Keep Flowers Fresh - Bliss Bouquet"
+        description="Expert flower care tips from Kenya's premier florist. Learn how to keep roses, lilies, and bouquets fresh longer. Professional flower care guide for maximum longevity."
+        canonical="https://blissbouquetkenya.com/care-guide"
+        keywords="flower care tips Kenya, how to keep flowers fresh, rose care guide, flower maintenance Kenya, bouquet care tips, flower longevity tips"
+        ogTitle="Flower Care Guide Kenya | Keep Flowers Fresh Longer"
+        ogDescription="Expert flower care tips from Kenya's premier florist. Learn how to keep roses, lilies, and bouquets fresh longer with professional care techniques."
+      />
       <Header />
+      <Breadcrumb />
       <main className="flex-1 container py-12 animate-fade-in">
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="text-center space-y-4">

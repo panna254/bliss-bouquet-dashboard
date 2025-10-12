@@ -11,6 +11,7 @@ import ContactUs from "./pages/ContactUs";
 import DeliveryInfo from "./pages/DeliveryInfo";
 import CareGuide from "./pages/CareGuide";
 import Returns from "./pages/Returns";
+import CategoryPage from "./pages/CategoryPage";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,13 @@ const App = () => (
             <Route path="/delivery-info" element={<DeliveryInfo />} />
             <Route path="/care-guide" element={<CareGuide />} />
             <Route path="/returns" element={<Returns />} />
+            
+            {/* Category and Occasion Pages */}
+            <Route path="/roses" element={<CategoryPage />} />
+            <Route path="/bouquets" element={<CategoryPage />} />
+            <Route path="/birthday-flowers" element={<CategoryPage />} />
+            <Route path="/wedding-flowers" element={<CategoryPage />} />
+            
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

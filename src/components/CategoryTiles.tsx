@@ -10,7 +10,8 @@ const categoryData = [
     icon: Flower2,
     color: "bg-gradient-to-br from-rose-100 to-pink-100 dark:from-rose-900/20 dark:to-pink-900/20",
     iconColor: "text-rose-600",
-    popular: true
+    popular: true,
+    href: "/roses"
   },
   {
     id: "bouquets",
@@ -19,7 +20,8 @@ const categoryData = [
     icon: Sparkles,
     color: "bg-gradient-to-br from-purple-100 to-violet-100 dark:from-purple-900/20 dark:to-violet-900/20",
     iconColor: "text-purple-600",
-    popular: true
+    popular: true,
+    href: "/bouquets"
   },
   {
     id: "plants",
@@ -72,7 +74,7 @@ const CategoryTiles = () => {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
           {categoryData.map((category, index) => {
             const Icon = category.icon;
-            return (
+            const CardComponent = (
               <Card 
                 key={category.id}
                 className={`group cursor-pointer border-2 hover:border-primary/50 transition-elegant hover:shadow-card-hover hover:-translate-y-1 ${category.color}`}
@@ -99,6 +101,14 @@ const CategoryTiles = () => {
                   </p>
                 </CardContent>
               </Card>
+            );
+
+            return category.href ? (
+              <a key={category.id} href={category.href}>
+                {CardComponent}
+              </a>
+            ) : (
+              CardComponent
             );
           })}
         </div>

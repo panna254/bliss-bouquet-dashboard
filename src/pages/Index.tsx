@@ -5,6 +5,7 @@ import FeaturedCarousel from "@/components/FeaturedCarousel";
 import TrendingOccasions from "@/components/TrendingOccasions";
 import ProductCard from "@/components/ProductCard";
 import Newsletter from "@/components/Newsletter";
+import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { products, categories } from "@/data/products";
@@ -27,6 +28,14 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead 
+        title="Bliss Bouquet Kenya - Fresh Flowers Delivery Nairobi | Same Day Flower Delivery Kenya"
+        description="Premium fresh flowers delivery in Nairobi, Kenya. Same-day flower delivery, wedding bouquets, birthday flowers, roses, lilies. Best florist in Kenya with 30+ arrangements. Order online now!"
+        canonical="https://blissbouquetkenya.com/"
+        keywords="flowers Kenya, flower delivery Nairobi, same day flower delivery Kenya, fresh flowers Nairobi, wedding bouquets Kenya, birthday flowers, roses Kenya, lilies Kenya, florist Nairobi, flower shop Kenya"
+        ogTitle="Bliss Bouquet Kenya - Fresh Flowers Delivery Nairobi | Same Day Delivery"
+        ogDescription="Premium fresh flowers delivery in Nairobi, Kenya. Same-day delivery, wedding bouquets, birthday flowers. Best florist in Kenya with 30+ arrangements."
+      />
       <Header />
       <div id="hero">
         <Hero />

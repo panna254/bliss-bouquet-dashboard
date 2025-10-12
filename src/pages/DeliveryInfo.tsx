@@ -3,11 +3,22 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
+import Breadcrumb from "@/components/Breadcrumb";
 
 const DeliveryInfo = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-secondary/5 via-background to-primary/5">
+      <SEOHead 
+        title="Same Day Flower Delivery Nairobi Kenya | Delivery Info - Bliss Bouquet"
+        description="Same-day flower delivery in Nairobi, Kenya. KES 500 delivery within Nairobi, nationwide coverage. Order before 2 PM for same-day delivery. Fresh flowers guaranteed."
+        canonical="https://blissbouquetkenya.com/delivery-info"
+        keywords="same day flower delivery Nairobi, flower delivery Kenya, delivery rates Nairobi, flower delivery times Kenya, nationwide flower delivery"
+        ogTitle="Same Day Flower Delivery Nairobi Kenya | Bliss Bouquet"
+        ogDescription="Same-day flower delivery in Nairobi, Kenya. KES 500 delivery within Nairobi, nationwide coverage. Order before 2 PM for same-day delivery."
+      />
       <Header />
+      <Breadcrumb />
       <main className="flex-1 container py-12 animate-fade-in">
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="text-center space-y-4">

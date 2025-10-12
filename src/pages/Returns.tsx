@@ -4,11 +4,22 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
+import Breadcrumb from "@/components/Breadcrumb";
 
 const Returns = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-primary/5 via-background to-accent/5">
+      <SEOHead 
+        title="Returns & Refunds Policy - Bliss Bouquet Kenya | 100% Satisfaction Guarantee"
+        description="100% satisfaction guarantee on all flower deliveries in Kenya. Learn about our return policy, refund process, and quality guarantee. Customer satisfaction is our priority."
+        canonical="https://blissbouquetkenya.com/returns"
+        keywords="flower return policy Kenya, refund guarantee flowers, satisfaction guarantee florist, return policy Nairobi, flower quality guarantee"
+        ogTitle="Returns & Refunds Policy - Bliss Bouquet Kenya"
+        ogDescription="100% satisfaction guarantee on all flower deliveries in Kenya. Learn about our return policy and quality guarantee for complete peace of mind."
+      />
       <Header />
+      <Breadcrumb />
       <main className="flex-1 container py-12 animate-fade-in">
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="text-center space-y-4">
