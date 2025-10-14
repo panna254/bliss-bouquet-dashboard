@@ -94,16 +94,27 @@ const Index = () => {
               "itemListElement": displayedProducts.slice(0, 5).map((product, index) => ({
                 "@type": "Offer",
                 "position": index + 1,
+                "price": product.price,
+                "priceCurrency": "KES",
+                "availability": "https://schema.org/InStock",
                 "itemOffered": {
                   "@type": "Product",
                   "name": product.name,
                   "description": product.description,
                   "image": `https://blissbouquetkenya.com${product.image}`,
+                  "brand": {
+                    "@type": "Brand",
+                    "name": "Bliss Bouquet Kenya"
+                  },
                   "offers": {
                     "@type": "Offer",
                     "price": product.price,
                     "priceCurrency": "KES",
-                    "availability": "https://schema.org/InStock"
+                    "availability": "https://schema.org/InStock",
+                    "seller": {
+                      "@type": "Organization",
+                      "name": "Bliss Bouquet Kenya"
+                    }
                   },
                   "aggregateRating": {
                     "@type": "AggregateRating",
