@@ -14,6 +14,8 @@ import lilyElegance from "@/assets/lily-elegance.jpg";
 import chrysanthemumCluster from "@/assets/chrysanthemum-cluster.jpg";
 import exoticProtea from "@/assets/exotic-protea.jpg";
 import peaceLily from "@/assets/peace-lily.jpg";
+import moneyBouquetGold from "@/assets/money-bouquet-gold.jpg";
+import moneyBouquetPremium from "@/assets/money-bouquet-premium.jpg";
 
 export interface Product {
   id: string;
@@ -215,6 +217,30 @@ export const products: Product[] = [
     isPopular: true,
     isSameDay: true,
     description: "An exquisite gift set featuring a dozen premium red roses paired with a fine bottle of wine, elegantly presented in a luxury gift box. Perfect for anniversaries, romantic occasions, or to make a lasting impression.",
+    category: "gift-sets"
+  },
+  {
+    id: "17",
+    name: "Luxury Gold Money Bouquet",
+    price: 10500,
+    image: moneyBouquetGold,
+    rating: 5.0,
+    reviewCount: 73,
+    isPopular: true,
+    isSameDay: true,
+    description: "A stunning money bouquet featuring crisp Kenyan shilling notes artfully arranged like flower petals, decorated with golden ribbons and elegant wrapping. Perfect for graduations, promotions, weddings, or any celebration where you want to give the gift of cash in style.",
+    category: "gift-sets"
+  },
+  {
+    id: "18",
+    name: "Premium Money Rose Bouquet",
+    price: 8500,
+    image: moneyBouquetPremium,
+    rating: 4.9,
+    reviewCount: 61,
+    isPopular: true,
+    isSameDay: true,
+    description: "An elegant money bouquet with Kenyan currency notes expertly folded into beautiful rose shapes, tied with red satin ribbons. A unique and creative way to gift money for birthdays, housewarmings, or special achievements.",
     category: "gift-sets"
   }
 ];
