@@ -229,7 +229,7 @@ export const products: Product[] = [
     isPopular: true,
     isSameDay: true,
     description: "A stunning money bouquet featuring crisp Kenyan shilling notes artfully arranged like flower petals, decorated with golden ribbons and elegant wrapping. Perfect for graduations, promotions, weddings, or any celebration where you want to give the gift of cash in style.",
-    category: "gift-sets"
+    category: "money-bouquets"
   },
   {
     id: "18",
@@ -241,7 +241,7 @@ export const products: Product[] = [
     isPopular: true,
     isSameDay: true,
     description: "An elegant money bouquet with Kenyan currency notes expertly folded into beautiful rose shapes, tied with red satin ribbons. A unique and creative way to gift money for birthdays, housewarmings, or special achievements.",
-    category: "gift-sets"
+    category: "money-bouquets"
   }
 ];
 
@@ -265,5 +265,10 @@ export const categories = [
     id: "roses",
     name: "Roses",
     count: products.filter(p => p.category === "roses").length
+  },
+  {
+    id: "money-bouquets",
+    name: "Money Bouquets",
+    count: products.filter(p => p.category === "money-bouquets").length
   }
 ];
