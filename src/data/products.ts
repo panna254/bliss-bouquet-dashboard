@@ -222,7 +222,7 @@ export const products: Product[] = [
   {
     id: "17",
     name: "Luxury Gold Money Bouquet",
-    price: 10500,
+    price: 10000,
     image: moneyBouquetGold,
     rating: 5.0,
     reviewCount: 73,
@@ -234,7 +234,7 @@ export const products: Product[] = [
   {
     id: "18",
     name: "Premium Money Rose Bouquet",
-    price: 8500,
+    price: 15000,
     image: moneyBouquetPremium,
     rating: 4.9,
     reviewCount: 61,
