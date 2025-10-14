@@ -9,13 +9,13 @@ import Breadcrumb from "@/components/Breadcrumb";
 const DeliveryInfo = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-secondary/5 via-background to-primary/5">
-      <SEOHead 
-        title="Same Day Flower Delivery Nairobi Kenya | Delivery Info - Bliss Bouquet"
-        description="Same-day flower delivery in Nairobi, Kenya. KES 500 delivery within Nairobi, nationwide coverage. Order before 2 PM for same-day delivery. Fresh flowers guaranteed."
+      <SEOHead
+        title="Flower Delivery Information Kenya | Shipping & Coverage - Bliss Bouquet"
+        description="Learn about flower delivery times, coverage areas, and shipping rates from Kenya’s leading florist. Get fast same-day delivery in Nairobi and safe nationwide shipping."
         canonical="https://blissbouquetkenya.com/delivery-info"
-        keywords="same day flower delivery Nairobi, flower delivery Kenya, delivery rates Nairobi, flower delivery times Kenya, nationwide flower delivery"
-        ogTitle="Same Day Flower Delivery Nairobi Kenya | Bliss Bouquet"
-        ogDescription="Same-day flower delivery in Nairobi, Kenya. KES 500 delivery within Nairobi, nationwide coverage. Order before 2 PM for same-day delivery."
+        keywords="flower delivery Nairobi, Kenya flower shipping, same-day flower delivery, delivery rates, florist delivery info"
+        ogTitle="Kenya Flower Delivery Details | Fast Nairobi Service & Coverage"
+        ogDescription="Everything you need to know about same-day delivery, nationwide flower shipping, and fast service from Bliss Bouquet Kenya."
       />
       <Header />
       <Breadcrumb />

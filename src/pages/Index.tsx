@@ -28,13 +28,13 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead 
+      <SEOHead
         title="Bliss Bouquet Kenya - Fresh Flowers Delivery Nairobi | Same Day Flower Delivery Kenya"
-        description="Premium fresh flowers delivery in Nairobi, Kenya. Same-day flower delivery, wedding bouquets, birthday flowers, roses, lilies. Best florist in Kenya with 30+ arrangements. Order online now!"
+        description="Order fresh flowers in Nairobi with same-day delivery. Shop luxury bouquets, premium roses, and gifts from Kenya's top florist. Enjoy fast, reliable, and beautiful flower delivery for any occasion—birthday, wedding, anniversary, and more. Online ordering available!"
         canonical="https://blissbouquetkenya.com/"
         keywords="flowers Kenya, flower delivery Nairobi, same day flower delivery Kenya, fresh flowers Nairobi, wedding bouquets Kenya, birthday flowers, roses Kenya, lilies Kenya, florist Nairobi, flower shop Kenya"
         ogTitle="Bliss Bouquet Kenya - Fresh Flowers Delivery Nairobi | Same Day Delivery"
-        ogDescription="Premium fresh flowers delivery in Nairobi, Kenya. Same-day delivery, wedding bouquets, birthday flowers. Best florist in Kenya with 30+ arrangements."
+        ogDescription="Order luxury bouquets, premium fresh flowers, and unique gifts online for same-day delivery in Nairobi. Trusted florist for all occasions in Kenya."
       />
       
       {/* Enhanced Structured Data for Homepage */}

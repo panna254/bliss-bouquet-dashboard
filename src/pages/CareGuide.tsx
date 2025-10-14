@@ -11,11 +11,11 @@ const CareGuide = () => {
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-accent/5 via-background to-primary/5">
       <SEOHead 
         title="Flower Care Guide Kenya | How to Keep Flowers Fresh - Bliss Bouquet"
-        description="Expert flower care tips from Kenya's premier florist. Learn how to keep roses, lilies, and bouquets fresh longer. Professional flower care guide for maximum longevity."
+        description="Discover expert flower care tips from Kenya’s top florist. Learn how to keep roses and bouquets fresh, vibrant, and long-lasting with simple at-home care."
         canonical="https://blissbouquetkenya.com/care-guide"
         keywords="flower care tips Kenya, how to keep flowers fresh, rose care guide, flower maintenance Kenya, bouquet care tips, flower longevity tips"
         ogTitle="Flower Care Guide Kenya | Keep Flowers Fresh Longer"
-        ogDescription="Expert flower care tips from Kenya's premier florist. Learn how to keep roses, lilies, and bouquets fresh longer with professional care techniques."
+        ogDescription="Step-by-step advice for caring for your flowers and bouquets. Keep your floral gifts looking beautiful for longer with our professional flower care tips."
       />
       <Header />
       <Breadcrumb />

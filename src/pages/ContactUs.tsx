@@ -10,15 +10,15 @@ import StructuredData from "@/components/StructuredData";
 const ContactUs = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-      <SEOHead 
-        title="Contact Bliss Bouquet Kenya - Florist Nairobi | WhatsApp +254743491613"
-        description="Contact Kenya's premier florist for fresh flower delivery in Nairobi. Call +254743491613, email blissbouquet187@gmail.com. Same-day delivery, wedding bouquets, birthday flowers."
+      <SEOHead
+        title="Contact Bliss Bouquet Kenya | Best Florist Customer Support"
+        description="Get in touch with Kenya’s top-rated florist for flower delivery, custom bouquets, or order support. Phone, WhatsApp, and email customer service."
         canonical="https://blissbouquetkenya.com/contact-us"
-        keywords="contact florist Nairobi, flower delivery Kenya contact, Bliss Bouquet Kenya phone, WhatsApp flower delivery, florist contact Nairobi"
-        ogTitle="Contact Bliss Bouquet Kenya - Florist Nairobi"
-        ogDescription="Contact Kenya's premier florist for fresh flower delivery in Nairobi. Call +254743491613 for same-day delivery, wedding bouquets, birthday flowers."
+        keywords="contact florist Kenya, Nairobi flower support, Bliss Bouquet WhatsApp, call florist Nairobi, email Kenya florist"
+        ogTitle="Contact Bliss Bouquet Kenya | Flower Delivery Customer Service"
+        ogDescription="Contact us for fresh flower delivery, order assistance, or special request bouquets in Nairobi. Call, email, or WhatsApp us today!"
       />
-      <StructuredData 
+      <StructuredData
         type="ContactPage"
         title="Contact Bliss Bouquet Kenya - Florist Nairobi"
         description="Contact Kenya's premier florist for fresh flower delivery in Nairobi. Call +254743491613 for same-day delivery, wedding bouquets, birthday flowers."
@@ -51,8 +51,8 @@ const ContactUs = () => {
                 <CardDescription>Call us directly for immediate assistance</CardDescription>
               </CardHeader>
               <CardContent>
-                <a 
-                  href="tel:0743491613" 
+                <a
+                  href="tel:0743491613"
                   className="text-lg font-semibold text-primary hover:underline"
                 >
                   0743 491 613
@@ -69,8 +69,8 @@ const ContactUs = () => {
                 <CardDescription>Send us a message anytime</CardDescription>
               </CardHeader>
               <CardContent>
-                <a 
-                  href="mailto:blissbouquet187@gmail.com" 
+                <a
+                  href="mailto:blissbouquet187@gmail.com"
                   className="text-lg font-semibold text-primary hover:underline break-all"
                 >
                   blissbouquet187@gmail.com
@@ -115,10 +115,10 @@ const ContactUs = () => {
             </CardHeader>
             <CardContent>
               <p className="mb-4 text-muted-foreground">
-                For the fastest response, message us on WhatsApp. Our team is ready to help with orders, 
+                For the fastest response, message us on WhatsApp. Our team is ready to help with orders,
                 custom arrangements, and any questions you have.
               </p>
-              <a 
+              <a
                 href="https://wa.me/254743491613"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -130,7 +130,7 @@ const ContactUs = () => {
               </a>
             </CardContent>
           </Card>
-          
+
           <div className="text-center mt-8">
             <a href="/" className="inline-block">
               <button className="px-6 py-3 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors duration-200 font-medium">

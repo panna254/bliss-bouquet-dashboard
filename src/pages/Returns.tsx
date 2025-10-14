@@ -10,13 +10,13 @@ import Breadcrumb from "@/components/Breadcrumb";
 const Returns = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-primary/5 via-background to-accent/5">
-      <SEOHead 
-        title="Returns & Refunds Policy - Bliss Bouquet Kenya | 100% Satisfaction Guarantee"
-        description="100% satisfaction guarantee on all flower deliveries in Kenya. Learn about our return policy, refund process, and quality guarantee. Customer satisfaction is our priority."
+      <SEOHead
+        title="Returns & Refunds Policy Kenya | 100% Flower Satisfaction Guarantee"
+        description="Read Bliss Bouquet Kenya’s return and refund policy. 100% satisfaction guarantee on all flower delivered in Nairobi and Kenya. Fast hassle-free claims."
         canonical="https://blissbouquetkenya.com/returns"
-        keywords="flower return policy Kenya, refund guarantee flowers, satisfaction guarantee florist, return policy Nairobi, flower quality guarantee"
-        ogTitle="Returns & Refunds Policy - Bliss Bouquet Kenya"
-        ogDescription="100% satisfaction guarantee on all flower deliveries in Kenya. Learn about our return policy and quality guarantee for complete peace of mind."
+        keywords="returns policy Kenya florist, flower refund Nairobi, satisfaction guarantee flowers, flower claims Kenya"
+        ogTitle="Return & Refund Policy | Bliss Bouquet Kenya Flowers Guarantee"
+        ogDescription="Satisfaction guaranteed or your money back. Learn about returns and refunds for flower deliveries in Kenya."
       />
       <Header />
       <Breadcrumb />
