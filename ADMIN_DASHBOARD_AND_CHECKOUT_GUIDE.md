@@ -354,6 +354,106 @@ Use these prompts while implementing the feature.
 - “Use a separate admin color scheme or layout style so the dashboard is visually distinct.”
 - “Protect admin pages with authentication, even if the first version uses a simple token.”
 
+### 7.6 Bolt AI (JSX) Agent Integration
+If you want a safe, maintainable Bolt-style JSX agent for admin workflows, add a small, strictly-isolated integration that cannot break the storefront. The goal: provide AI-assisted suggestions (product copy, SEO keywords, quick edits) while requiring explicit admin confirmation for any changes.
+
+Key principles
+- Isolation: agent UI and runtime code must live under `src/agents/bolt/` and be lazy-loaded by admin routes only. The public storefront must not import or bundle agent modules.
+- No client-side secrets: never place provider API keys in browser code. Use a server-side proxy (`/api/bolt`) or serverless function that holds keys and forwards requests.
+- No direct global mutations: the agent returns suggestions. Any write operations must call existing `adminApi` endpoints or be applied by the admin through controlled handlers.
+- Defensive UX: the agent should display network errors, retries, and a clear "Apply" confirmation step. It must be feature-flagged (disabled by default) until backend proxies and monitoring are in place.
+
+Minimal file layout
+- `src/agents/bolt/BoltAgent.tsx` — lazy-loaded UI component (JSX/TSX) with internal error handling
+- `src/agents/bolt/index.ts` — exports and small helpers
+- `src/agents/bolt/types.ts` — types for prompts and responses
+- `src/pages/admin/AdminAgent.tsx` — optional admin route wrapper or modal launcher
+
+Safe integration pattern
+1. Add a server-side proxy endpoint `POST /api/bolt` that accepts `{ prompt }`, calls the external provider with server-held credentials, and returns a sanitized response. Implement rate-limiting and request logging server-side.
+2. Create `BoltAgent` as a self-contained component that posts prompts to `/api/bolt`. Show loading, error, and result states. Do not import app globals directly.
+3. Lazy-load `BoltAgent` in admin pages using `React.lazy` + `Suspense` so it is not part of the public bundle.
+4. When an admin chooses to apply a suggestion, call `adminApi.updateProduct(...)` or another explicit mutation endpoint; do not mutate `CartContext` or other global client-only contexts directly.
+5. Wrap agent features in an environment toggle such as `VITE_ENABLE_BOLT_AGENT` and keep it `false` in production until backend proxy and monitoring are validated.
+
+Robust TSX sketch (safe, minimal, with error handling)
+
+```tsx
+// src/agents/bolt/BoltAgent.tsx
+import React, { useState } from 'react';
+import type { SuggestionResponse } from './types';
+
+export default function BoltAgent({ onApply }: { onApply?: (payload: any) => Promise<void> }) {
+  const [prompt, setPrompt] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<SuggestionResponse | null>(null);
+
+  const run = async () => {
+    setError(null);
+    setLoading(true);
+    setResult(null);
+    try {
+      const res = await fetch('/api/bolt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt }),
+      });
+      if (!res.ok) throw new Error(`Server error ${res.status}`);
+      const json = await res.json();
+      setResult(json as SuggestionResponse);
+    } catch (err: any) {
+      setError(err?.message ?? 'Unknown error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="p-4">
+      <label className="block text-sm font-medium mb-1">Prompt</label>
+      <textarea
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+        className="w-full h-36 p-2 border rounded"
+        aria-label="Bolt prompt"
+      />
+
+      <div className="mt-3 flex gap-2">
+        <button onClick={run} disabled={loading || !prompt} className="btn">
+          {loading ? 'Running...' : 'Run'}
+        </button>
+        {result && onApply && (
+          <button
+            onClick={() => onApply(result.suggestion)}
+            className="btn-outline"
+          >
+            Apply suggestion
+          </button>
+        )}
+      </div>
+
+      {error && <div className="mt-3 text-destructive">Error: {error}</div>}
+
+      {result && (
+        <div className="mt-4 bg-muted p-3 rounded">
+          <h4 className="font-semibold">Suggestion</h4>
+          <pre className="whitespace-pre-wrap">{result.text}</pre>
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+Operational safety checklist
+- Keep the agent files out of public imports and lazy-load them.
+- Use a secure server-side proxy for provider calls; log, monitor, and rate-limit.
+- Require explicit admin confirmation before any data mutation; always call `adminApi` endpoints for writes.
+- Add UI fallbacks: show friendly error messages, allow retry, and avoid silent failures.
+- Use an env toggle to disable the agent instantly if something goes wrong in production.
+
+This approach provides a useful Bolt-style agent while preserving the storefront's stability and minimizing the risk of shipping runtime errors or leaking secrets.
 ---
 
 ## 8. Recommended Minimal Implementation Sequence
@@ -392,6 +492,12 @@ Use these prompts while implementing the feature.
 - `src/pages/checkout/Checkout.tsx`
 - `src/pages/checkout/CheckoutReview.tsx`
 - `src/pages/checkout/Confirmation.tsx`
+
+<!-- Bolt agent files -->
+- `src/agents/bolt/BoltAgent.tsx`
+- `src/agents/bolt/index.ts`
+- `src/agents/bolt/types.ts`
+- `src/pages/admin/AdminAgent.tsx`
 
 ---
 
