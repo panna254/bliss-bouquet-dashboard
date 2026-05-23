@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Product } from '@/data/products';
+import type { Product } from '@/adapters/productAdapter';
 import { useToast } from '@/hooks/use-toast';
 
 interface CartItem extends Product {

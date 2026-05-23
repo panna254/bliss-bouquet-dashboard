@@ -8,7 +8,7 @@ import Newsletter from "@/components/Newsletter";
 import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { products, categories } from "@/data/products";
+import { getProductCategories, getProducts, getProductsByCategory } from "@/adapters/productAdapter";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Filter, Grid, List } from "lucide-react";
@@ -19,9 +19,11 @@ const Index = () => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [displayCount, setDisplayCount] = useState(8);
 
+  const products = getProducts();
+  const categories = getProductCategories();
   const filteredProducts = selectedCategory === "all" 
     ? products 
-    : products.filter(product => product.category === selectedCategory);
+    : getProductsByCategory(selectedCategory);
 
   const displayedProducts = filteredProducts.slice(0, displayCount);
   const hasMore = displayCount < filteredProducts.length;

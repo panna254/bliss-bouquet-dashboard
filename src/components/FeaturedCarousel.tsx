@@ -3,10 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ChevronLeft, ChevronRight, Star, ShoppingCart } from "lucide-react";
 import { useState } from "react";
-import { products } from "@/data/products";
+import { getProducts } from "@/adapters/productAdapter";
 
 const FeaturedCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const products = getProducts();
   const featuredProducts = products.filter(p => p.isPopular).slice(0, 6);
   
   const nextSlide = () => {

@@ -3,11 +3,12 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
 import ProductCard from "@/components/ProductCard";
+import NotFound from "@/pages/NotFound";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { products } from "@/data/products";
+import { getProducts, getProductsByCategory } from "@/adapters/productAdapter";
 import { useState } from "react";
-import { Grid, List, Filter } from "lucide-react";
+import { Grid, List } from "lucide-react";
 
 interface CategoryConfig {
   title: string;
@@ -59,33 +60,23 @@ const CategoryPage = () => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [displayCount, setDisplayCount] = useState(12);
 
-  const config = category ? categoryConfigs[category] : null;
+  const categorySlug = category?.toLowerCase() ?? "";
+  const config = categoryConfigs[categorySlug];
   
   if (!config) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Header />
-        <main className="container py-12">
-          <h1>Category not found</h1>
-          <p>The requested category does not exist.</p>
-        </main>
-        <Footer />
-      </div>
-    );
+    return <NotFound />;
   }
 
-  // Filter products based on category or occasion
-  const filteredProducts = products.filter(product => {
-    if (config.category) {
-      return product.category === config.category;
-    }
-    if (config.occasion) {
-      // For occasion-based filtering, we'll check the product name and description
-      const searchText = `${product.name} ${product.description}`.toLowerCase();
-      return searchText.includes(config.occasion);
-    }
-    return false;
-  });
+  const filteredProducts = config.category
+    ? getProductsByCategory(config.category)
+    : getProducts().filter(product => {
+        if (config.occasion) {
+          // For occasion-based filtering, we'll check the product name and description
+          const searchText = `${product.name} ${product.description}`.toLowerCase();
+          return searchText.includes(config.occasion);
+        }
+        return false;
+      });
 
   const displayedProducts = filteredProducts.slice(0, displayCount);
   const hasMore = displayCount < filteredProducts.length;
@@ -95,7 +86,7 @@ const CategoryPage = () => {
       <SEOHead 
         title={config.title}
         description={config.description}
-        canonical={`https://blissbouquetkenya.com/${category}`}
+        canonical={`https://blissbouquetkenya.com/${categorySlug}`}
         keywords={config.keywords}
         ogTitle={config.ogTitle}
         ogDescription={config.ogDescription}
@@ -110,7 +101,7 @@ const CategoryPage = () => {
             "@type": "CollectionPage",
             "name": config.ogTitle,
             "description": config.ogDescription,
-            "url": `https://blissbouquetkenya.com/${category}`,
+            "url": `https://blissbouquetkenya.com/${categorySlug}`,
             "mainEntity": {
               "@type": "ItemList",
               "name": config.ogTitle,
@@ -143,7 +134,7 @@ const CategoryPage = () => {
                   "@type": "Brand",
                   "name": "Bliss Bouquet Kenya"
                 },
-                "category": config.category || category?.replace('-', ' ')
+                "category": config.category || categorySlug.replace('-', ' ')
               }))
             },
             "breadcrumb": {
@@ -159,7 +150,7 @@ const CategoryPage = () => {
                   "@type": "ListItem",
                   "position": 2,
                   "name": config.ogTitle,
-                  "item": `https://blissbouquetkenya.com/${category}`
+                  "item": `https://blissbouquetkenya.com/${categorySlug}`
                 }
               ]
             },
@@ -196,7 +187,7 @@ const CategoryPage = () => {
           <ol className="flex items-center space-x-2 text-sm text-muted-foreground">
             <li><a href="/" className="hover:text-primary">Home</a></li>
             <li>/</li>
-            <li className="text-foreground capitalize">{category?.replace('-', ' ')}</li>
+            <li className="text-foreground capitalize">{categorySlug.replace('-', ' ')}</li>
           </ol>
         </nav>
 
@@ -265,7 +256,7 @@ const CategoryPage = () => {
           <div className="text-center py-12">
             <h3 className="text-xl font-semibold mb-4">No products found</h3>
             <p className="text-muted-foreground mb-6">
-              We're currently updating our {category?.replace('-', ' ')} collection.
+              We're currently updating our {categorySlug.replace('-', ' ')} collection.
             </p>
             <Button asChild>
               <a href="/">Browse All Products</a>
