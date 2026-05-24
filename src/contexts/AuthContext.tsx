@@ -1,4 +1,5 @@
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { markSessionExpired } from "@/services/authRedirect.service";
 import {
   getCurrentSession,
   logout,
@@ -32,6 +33,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState(true);
   const [initialized, setInitialized] = useState(false);
   const refreshSequence = useRef(0);
+  const previousSessionRef = useRef<AuthSession | null>(null);
+  const voluntarySignOutRef = useRef(false);
+
+  const applySession = useCallback((nextSession: AuthSession | null) => {
+    const previousSession = previousSessionRef.current;
+
+    if (nextSession === null && previousSession !== null && !voluntarySignOutRef.current) {
+      markSessionExpired();
+    }
+
+    previousSessionRef.current = nextSession;
+    setSession(nextSession);
+  }, []);
 
   const refreshSession = useCallback(async () => {
     const sequence = refreshSequence.current + 1;
@@ -42,13 +56,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const nextSession = await getCurrentSession();
 
       if (refreshSequence.current === sequence) {
-        setSession(nextSession);
+        applySession(nextSession);
       }
 
       return nextSession;
     } catch {
       if (refreshSequence.current === sequence) {
-        setSession(null);
+        applySession(null);
       }
 
       return null;
@@ -58,7 +72,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setInitialized(true);
       }
     }
-  }, []);
+  }, [applySession]);
 
   useEffect(() => {
     let isMounted = true;
@@ -93,15 +107,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signOut = useCallback(async () => {
     setLoading(true);
+    voluntarySignOutRef.current = true;
 
     try {
       await logout();
-      setSession(null);
+      applySession(null);
     } finally {
+      voluntarySignOutRef.current = false;
       setLoading(false);
       setInitialized(true);
     }
-  }, []);
+  }, [applySession]);
 
   const value = useMemo<AuthContextValue>(() => {
     const user = session?.user ?? null;

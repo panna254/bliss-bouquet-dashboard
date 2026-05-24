@@ -28,7 +28,7 @@ const OrdersPage = () => {
         }
       } catch (error) {
         if (isMounted) {
-          setErrorMessage(error instanceof Error ? error.message : "Orders could not be loaded.");
+          setErrorMessage("We couldn't load your order history right now. Please refresh the page or try again later.");
         }
       } finally {
         if (isMounted) {

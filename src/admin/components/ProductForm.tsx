@@ -43,7 +43,7 @@ const isValidImageReference = (value: string): boolean => {
   return /^(https?:\/\/|\/|\.\/|\.\.\/|[A-Za-z0-9_\-/]+?\.(jpe?g|png|webp|gif|avif)(\?.*)?$)/i.test(imageReference);
 };
 
-const validateValues = (values: ProductFormValues): ProductFormErrors => {
+const validateValues = (values: ProductFormValues, imageFile: File | null): ProductFormErrors => {
   const errors: ProductFormErrors = {};
   const price = Number(values.price);
   const stockQuantity = Number(values.stockQuantity);
@@ -60,10 +60,12 @@ const validateValues = (values: ProductFormValues): ProductFormErrors => {
     errors.category = "Category is required.";
   }
 
-  if (!values.imageUrl.trim()) {
-    errors.imageUrl = "Image path or URL is required.";
-  } else if (!isValidImageReference(values.imageUrl)) {
-    errors.imageUrl = "Use a local image path or a Supabase Storage URL.";
+  if (!imageFile) {
+    if (!values.imageUrl.trim()) {
+      errors.imageUrl = "Image path, URL, or file upload is required.";
+    } else if (!isValidImageReference(values.imageUrl)) {
+      errors.imageUrl = "Use a local image path or a Supabase Storage URL.";
+    }
   }
 
   if (!values.price.trim()) {
@@ -101,6 +103,8 @@ const ProductForm = ({ mode = "create", initialProduct, onSubmit, onCancel }: Pr
   const [errors, setErrors] = useState<ProductFormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
 
   const hasErrors = useMemo(() => Object.keys(errors).length > 0, [errors]);
   const isEditMode = mode === "edit";
@@ -109,7 +113,17 @@ const ProductForm = ({ mode = "create", initialProduct, onSubmit, onCancel }: Pr
     setValues(valuesFromProduct(initialProduct));
     setErrors({});
     setSubmitError(null);
+    setImageFile(null);
+    setImagePreviewUrl(null);
   }, [initialProduct]);
+
+  useEffect(() => {
+    return () => {
+      if (imagePreviewUrl) {
+        URL.revokeObjectURL(imagePreviewUrl);
+      }
+    };
+  }, [imagePreviewUrl]);
 
   const updateValue = (field: keyof ProductFormValues, value: string) => {
     setValues((currentValues) => ({
@@ -126,11 +140,34 @@ const ProductForm = ({ mode = "create", initialProduct, onSubmit, onCancel }: Pr
     }
   };
 
+  const handleImageFileChange = (file: File | null) => {
+    if (imagePreviewUrl) {
+      URL.revokeObjectURL(imagePreviewUrl);
+    }
+
+    if (!file) {
+      setImageFile(null);
+      setImagePreviewUrl(null);
+      return;
+    }
+
+    setImageFile(file);
+    setImagePreviewUrl(URL.createObjectURL(file));
+
+    if (errors.imageUrl) {
+      setErrors((currentErrors) => {
+        const nextErrors = { ...currentErrors };
+        delete nextErrors.imageUrl;
+        return nextErrors;
+      });
+    }
+  };
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSubmitError(null);
 
-    const nextErrors = validateValues(values);
+    const nextErrors = validateValues(values, imageFile);
     setErrors(nextErrors);
 
     if (Object.keys(nextErrors).length > 0) {
@@ -145,6 +182,7 @@ const ProductForm = ({ mode = "create", initialProduct, onSubmit, onCancel }: Pr
         description: values.description,
         category: values.category,
         imageUrl: values.imageUrl,
+        imageFile,
         price: Number(values.price),
         stockQuantity: Number(values.stockQuantity),
       });
@@ -154,6 +192,8 @@ const ProductForm = ({ mode = "create", initialProduct, onSubmit, onCancel }: Pr
       } else {
         setValues(initialValues);
       }
+      setImageFile(null);
+      setImagePreviewUrl(null);
       setErrors({});
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : "Product could not be created.");
@@ -228,6 +268,20 @@ const ProductForm = ({ mode = "create", initialProduct, onSubmit, onCancel }: Pr
       </div>
 
       <div className="space-y-2">
+        <Label htmlFor="product-image-file">Product Image File</Label>
+        <Input
+          id="product-image-file"
+          type="file"
+          accept="image/png,image/jpeg,image/webp,image/gif,image/avif"
+          onChange={(event) => handleImageFileChange(event.target.files?.[0] ?? null)}
+          disabled={isSubmitting}
+        />
+        <p className="text-xs text-muted-foreground">
+          Select a file to upload to Supabase Storage. This takes priority over a typed URL.
+        </p>
+      </div>
+
+      <div className="space-y-2">
         <Label htmlFor="product-image">Image Path or URL</Label>
         <Input
           id="product-image"
@@ -238,6 +292,17 @@ const ProductForm = ({ mode = "create", initialProduct, onSubmit, onCancel }: Pr
         />
         {errors.imageUrl && <p className="text-xs text-destructive">{errors.imageUrl}</p>}
       </div>
+
+      {(imagePreviewUrl || values.imageUrl) && (
+        <div className="space-y-2">
+          <p className="text-xs text-muted-foreground">Image preview</p>
+          <img
+            src={imagePreviewUrl ?? values.imageUrl}
+            alt="Product preview"
+            className="h-40 w-full max-w-xl rounded-md border object-cover"
+          />
+        </div>
+      )}
 
       <div className="space-y-2">
         <Label htmlFor="product-description">Description</Label>

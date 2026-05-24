@@ -1,4 +1,4 @@
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
@@ -9,7 +9,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
-import { getRedirectParam, resolvePostAuthRedirect } from "@/services/authRedirect.service";
+import {
+  type AuthRedirectReason,
+  buildAuthQueryString,
+  consumeSessionExpired,
+  formatCustomerSignupError,
+  getAuthReasonParam,
+  getCustomerAuthInfoMessage,
+  getRedirectParam,
+  resolvePostAuthRedirect,
+} from "@/services/authRedirect.service";
 import { signup } from "@/services/auth.service";
 
 const SignupPage = () => {
@@ -17,7 +26,20 @@ const SignupPage = () => {
   const location = useLocation();
   const { refreshSession } = useAuth();
   const redirect = useMemo(() => getRedirectParam(location.search), [location.search]);
+  const authReason = useMemo(() => getAuthReasonParam(location.search), [location.search]);
+  const [expiredReason, setExpiredReason] = useState<AuthRedirectReason | null>(null);
+  const effectiveReason = authReason ?? expiredReason;
+  const infoMessage = useMemo(
+    () => getCustomerAuthInfoMessage(effectiveReason, redirect),
+    [effectiveReason, redirect],
+  );
   const [fullName, setFullName] = useState("");
+
+  useEffect(() => {
+    if (!authReason && consumeSessionExpired()) {
+      setExpiredReason("session_expired");
+    }
+  }, [authReason]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -29,7 +51,7 @@ const SignupPage = () => {
     setErrorMessage(null);
 
     if (!fullName.trim() || !email.trim() || password.length < 8) {
-      setErrorMessage("Name, email, and a password of at least 8 characters are required.");
+      setErrorMessage("Please enter your name, email, and choose a password with at least 8 characters.");
       return;
     }
 
@@ -39,7 +61,7 @@ const SignupPage = () => {
       await refreshSession();
       navigate(resolvePostAuthRedirect(session, redirect), { replace: true });
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unable to create account.");
+      setErrorMessage(formatCustomerSignupError(error));
     } finally {
       setIsSubmitting(false);
     }
@@ -55,6 +77,12 @@ const SignupPage = () => {
             <h1 className="font-heading text-2xl font-semibold">Create your account</h1>
             <p className="mt-1 text-sm text-muted-foreground">Your account will be created as a customer account.</p>
           </div>
+
+          {infoMessage && (
+            <Alert>
+              <AlertDescription>{infoMessage}</AlertDescription>
+            </Alert>
+          )}
 
           {errorMessage && (
             <Alert variant="destructive">
@@ -96,7 +124,7 @@ const SignupPage = () => {
 
           <p className="text-center text-sm text-muted-foreground">
             Already have an account?{" "}
-            <Link className="font-medium text-primary hover:underline" to={`/login${redirect ? `?redirect=${encodeURIComponent(redirect)}` : ""}`}>
+            <Link className="font-medium text-primary hover:underline" to={`/login${buildAuthQueryString(redirect, effectiveReason)}`}>
               Sign in
             </Link>
           </p>

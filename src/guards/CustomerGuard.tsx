@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { buildLoginRedirectPath, persistAuthRedirect } from "@/services/authRedirect.service";
+import {
+  buildLoginRedirectPath,
+  persistAuthRedirect,
+  resolveAuthRedirectReason,
+} from "@/services/authRedirect.service";
 
 type CustomerGuardStatus = "checking" | "authorized" | "redirecting";
 
@@ -22,7 +26,7 @@ const CustomerGuard = () => {
     if (!isAuthenticated) {
       persistAuthRedirect(targetPath);
       setStatus("redirecting");
-      navigate(buildLoginRedirectPath(targetPath), { replace: true });
+      navigate(buildLoginRedirectPath(targetPath, resolveAuthRedirectReason(targetPath)), { replace: true });
       return;
     }
 
