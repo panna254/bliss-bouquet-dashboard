@@ -1,4 +1,4 @@
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
@@ -9,7 +9,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
-import { getRedirectParam, resolvePostAuthRedirect } from "@/services/authRedirect.service";
+import {
+  type AuthRedirectReason,
+  buildAuthQueryString,
+  consumeSessionExpired,
+  formatCustomerLoginError,
+  getAuthReasonParam,
+  getCustomerAuthInfoMessage,
+  getRedirectParam,
+  resolvePostAuthRedirect,
+} from "@/services/authRedirect.service";
 import { login } from "@/services/auth.service";
 
 const LoginPage = () => {
@@ -17,7 +26,20 @@ const LoginPage = () => {
   const location = useLocation();
   const { refreshSession } = useAuth();
   const redirect = useMemo(() => getRedirectParam(location.search), [location.search]);
+  const authReason = useMemo(() => getAuthReasonParam(location.search), [location.search]);
+  const [expiredReason, setExpiredReason] = useState<AuthRedirectReason | null>(null);
+  const effectiveReason = authReason ?? expiredReason;
+  const infoMessage = useMemo(
+    () => getCustomerAuthInfoMessage(effectiveReason, redirect),
+    [effectiveReason, redirect],
+  );
   const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    if (!authReason && consumeSessionExpired()) {
+      setExpiredReason("session_expired");
+    }
+  }, [authReason]);
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -28,7 +50,7 @@ const LoginPage = () => {
     setErrorMessage(null);
 
     if (!email.trim() || !password) {
-      setErrorMessage("Email and password are required.");
+      setErrorMessage("Please enter both your email and password.");
       return;
     }
 
@@ -38,7 +60,7 @@ const LoginPage = () => {
       await refreshSession();
       navigate(resolvePostAuthRedirect(session, redirect), { replace: true });
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unable to sign in.");
+      setErrorMessage(formatCustomerLoginError(error));
     } finally {
       setIsSubmitting(false);
     }
@@ -54,6 +76,12 @@ const LoginPage = () => {
             <h1 className="font-heading text-2xl font-semibold">Welcome back</h1>
             <p className="mt-1 text-sm text-muted-foreground">Sign in to continue with Bliss Bouquet Kenya.</p>
           </div>
+
+          {infoMessage && (
+            <Alert>
+              <AlertDescription>{infoMessage}</AlertDescription>
+            </Alert>
+          )}
 
           {errorMessage && (
             <Alert variant="destructive">
@@ -104,7 +132,7 @@ const LoginPage = () => {
 
           <p className="text-center text-sm text-muted-foreground">
             New here?{" "}
-            <Link className="font-medium text-primary hover:underline" to={`/signup${redirect ? `?redirect=${encodeURIComponent(redirect)}` : ""}`}>
+            <Link className="font-medium text-primary hover:underline" to={`/signup${buildAuthQueryString(redirect, effectiveReason)}`}>
               Create an account
             </Link>
           </p>

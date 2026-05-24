@@ -76,6 +76,9 @@ interface OrderRow {
   status: OrderStatus;
   total_amount: number | string;
   created_at: string;
+  customer?: OrderCustomer | null;
+  delivery?: OrderDeliveryDetails | null;
+  order_items?: OrderItemRow[] | null;
 }
 
 interface OrderItemRow {
@@ -115,8 +118,6 @@ const calculateSubtotal = (items: OrderItem[]): number =>
 const toOrder = (
   row: OrderRow,
   items: OrderItem[],
-  customer: OrderCustomer = emptyCustomer,
-  delivery: OrderDeliveryDetails = emptyDelivery,
 ): Order => {
   const subtotal = calculateSubtotal(items);
   const total = toNumber(row.total_amount, subtotal);
@@ -126,8 +127,8 @@ const toOrder = (
     id: row.id,
     userId: row.user_id ?? null,
     status: row.status,
-    customer,
-    delivery,
+    customer: row.customer ?? emptyCustomer,
+    delivery: row.delivery ?? emptyDelivery,
     items,
     subtotal,
     deliveryFee,
@@ -137,12 +138,56 @@ const toOrder = (
   };
 };
 
-const normalizeOrderError = (message: string, error: unknown): Error => {
-  if (error instanceof Error) {
-    return new Error(`${message}: ${error.message}`);
+const extractErrorDetail = (error: unknown): string => {
+  if (error instanceof Error && error.message.trim()) {
+    return error.message;
   }
 
-  return new Error(message);
+  if (error && typeof error === "object") {
+    const record = error as Record<string, unknown>;
+    const parts = [record.message, record.details, record.hint, record.code].filter(
+      (part): part is string => typeof part === "string" && part.trim().length > 0,
+    );
+
+    if (parts.length > 0) {
+      return parts.join(" — ");
+    }
+  }
+
+  return "Unknown database error";
+};
+
+const normalizeOrderError = (message: string, error: unknown): Error => {
+  return new Error(`${message}: ${extractErrorDetail(error)}`);
+};
+
+const ensureCustomerProfile = async (
+  supabase: ReturnType<typeof getSupabaseClient>,
+  user: { id: string; email?: string | null },
+): Promise<void> => {
+  const { data: existingProfile, error: readError } = await supabase
+    .from("profiles")
+    .select("id")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (readError) {
+    throw normalizeOrderError("Unable to verify customer profile", readError);
+  }
+
+  if (existingProfile) {
+    return;
+  }
+
+  const { error: insertError } = await supabase.from("profiles").insert({
+    id: user.id,
+    email: user.email ?? `${user.id}@customers.local`,
+    role: "customer",
+  });
+
+  if (insertError) {
+    throw normalizeOrderError("Unable to create customer profile", insertError);
+  }
 };
 
 export const isSupportedAdminOrderStatus = (status: string): status is AdminOrderStatus =>
@@ -173,8 +218,18 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
   const subtotal = calculateSubtotal(input.items);
   const deliveryFee = 0;
   const total = subtotal + deliveryFee;
-  const { data: userData } = await supabase.auth.getUser();
-  const userId = userData.user?.id ?? null;
+  const { data: userData, error: userError } = await supabase.auth.getUser();
+
+  if (userError) {
+    throw normalizeOrderError("Unable to verify signed-in customer", userError);
+  }
+
+  if (!userData.user) {
+    throw new Error("Unable to create order: Please sign in to place your order.");
+  }
+
+  await ensureCustomerProfile(supabase, userData.user);
+  const userId = userData.user.id;
 
   const { data: orderRow, error: orderError } = await supabase
     .from("orders")
@@ -182,8 +237,10 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
       user_id: userId,
       total_amount: total,
       status: "pending",
+      customer: input.customer,
+      delivery: input.delivery,
     })
-    .select("id,user_id,status,total_amount,created_at")
+    .select("id,user_id,status,total_amount,created_at,customer,delivery")
     .single();
 
   if (orderError || !orderRow) {
@@ -209,7 +266,7 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
     throw normalizeOrderError("Unable to create order items", itemsError);
   }
 
-  return toOrder(orderRow as OrderRow, input.items, input.customer, input.delivery);
+  return toOrder(orderRow as OrderRow, input.items);
 }
 
 export async function getOrderById(orderId: string): Promise<Order | null> {
@@ -217,7 +274,9 @@ export async function getOrderById(orderId: string): Promise<Order | null> {
 
   const { data: orderRow, error: orderError } = await supabase
     .from("orders")
-    .select("id,user_id,status,total_amount,created_at")
+    .select(
+      "id,user_id,status,total_amount,created_at,customer,delivery,order_items(product_id,quantity,price_at_purchase,products(name))",
+    )
     .eq("id", orderId)
     .maybeSingle();
 
@@ -229,23 +288,55 @@ export async function getOrderById(orderId: string): Promise<Order | null> {
     return null;
   }
 
-  const { data: itemRows, error: itemsError } = await supabase
-    .from("order_items")
-    .select("product_id,quantity,price_at_purchase,products(name)")
-    .eq("order_id", orderId);
+  const row = orderRow as OrderRow;
 
-  if (itemsError) {
-    throw normalizeOrderError(`Unable to fetch order items for ${orderId}`, itemsError);
-  }
-
-  const items = ((itemRows ?? []) as OrderItemRow[]).map((item) => ({
+  const items = ((row.order_items ?? []) as OrderItemRow[]).map((item) => ({
     productId: item.product_id,
     name: item.products?.name ?? "",
     unitPrice: toNumber(item.price_at_purchase),
     quantity: item.quantity,
   }));
 
-  return toOrder(orderRow as OrderRow, items);
+  return toOrder(row, items);
+}
+
+export async function getCurrentUserOrderById(orderId: string): Promise<Order | null> {
+  const supabase = getSupabaseClient();
+  const { data: userData, error: userError } = await supabase.auth.getUser();
+
+  if (userError || !userData.user) {
+    throw normalizeOrderError("Unable to load current user", userError);
+  }
+
+  const userId = userData.user.id;
+
+  const { data: orderRow, error: orderError } = await supabase
+    .from("orders")
+    .select(
+      "id,user_id,status,total_amount,created_at,customer,delivery,order_items(product_id,quantity,price_at_purchase,products(name))",
+    )
+    .eq("id", orderId)
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (orderError) {
+    throw normalizeOrderError(`Unable to fetch order ${orderId}`, orderError);
+  }
+
+  if (!orderRow) {
+    return null;
+  }
+
+  const row = orderRow as OrderRow;
+
+  const items = ((row.order_items ?? []) as OrderItemRow[]).map((item) => ({
+    productId: item.product_id,
+    name: item.products?.name ?? "",
+    unitPrice: toNumber(item.price_at_purchase),
+    quantity: item.quantity,
+  }));
+
+  return toOrder(row, items);
 }
 
 export async function getAdminOrderById(orderId: string): Promise<Order | null> {
@@ -261,14 +352,25 @@ export async function listOrders(): Promise<Order[]> {
 
   const { data, error } = await supabase
     .from("orders")
-    .select("id,user_id,status,total_amount,created_at")
+    .select(
+      "id,user_id,status,total_amount,created_at,customer,delivery,order_items(product_id,quantity,price_at_purchase,products(name))",
+    )
     .order("created_at", { ascending: false });
 
   if (error) {
     throw normalizeOrderError("Unable to fetch orders", error);
   }
 
-  return ((data ?? []) as OrderRow[]).map((row) => toOrder(row, []));
+  return ((data ?? []) as OrderRow[]).map((row) => {
+    const items = ((row.order_items ?? []) as OrderItemRow[]).map((item) => ({
+      productId: item.product_id,
+      name: item.products?.name ?? "",
+      unitPrice: toNumber(item.price_at_purchase),
+      quantity: item.quantity,
+    }));
+
+    return toOrder(row, items);
+  });
 }
 
 export async function listCurrentUserOrders(): Promise<Order[]> {
@@ -281,7 +383,9 @@ export async function listCurrentUserOrders(): Promise<Order[]> {
 
   const { data, error } = await supabase
     .from("orders")
-    .select("id,user_id,status,total_amount,created_at")
+    .select(
+      "id,user_id,status,total_amount,created_at,customer,delivery,order_items(product_id,quantity,price_at_purchase,products(name))",
+    )
     .eq("user_id", userData.user.id)
     .order("created_at", { ascending: false });
 
@@ -289,7 +393,16 @@ export async function listCurrentUserOrders(): Promise<Order[]> {
     throw normalizeOrderError("Unable to fetch customer orders", error);
   }
 
-  return ((data ?? []) as OrderRow[]).map((row) => toOrder(row, []));
+  return ((data ?? []) as OrderRow[]).map((row) => {
+    const items = ((row.order_items ?? []) as OrderItemRow[]).map((item) => ({
+      productId: item.product_id,
+      name: item.products?.name ?? "",
+      unitPrice: toNumber(item.price_at_purchase),
+      quantity: item.quantity,
+    }));
+
+    return toOrder(row, items);
+  });
 }
 
 export async function updateOrderStatus(orderId: string, status: AdminOrderStatus): Promise<Order> {
@@ -326,7 +439,7 @@ export async function updateOrderStatus(orderId: string, status: AdminOrderStatu
     .update({ status })
     .eq("id", orderId)
     .eq("status", currentOrder.status)
-    .select("id,user_id,status,total_amount,created_at")
+    .select("id,user_id,status,total_amount,created_at,customer,delivery")
     .maybeSingle();
 
   if (error) {

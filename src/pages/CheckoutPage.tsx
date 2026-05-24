@@ -1,5 +1,6 @@
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
@@ -9,7 +10,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useCart } from "@/contexts/CartContext";
-import { createCheckoutSession, submitOrder, type PaymentMethod } from "@/services/checkout.service";
+import {
+  createCheckoutSession,
+  submitOrder,
+  toCheckoutErrorMessages,
+  type PaymentMethod,
+} from "@/services/checkout.service";
 import { confirmPayment } from "@/services/payment.service";
 
 const formatPrice = (price: number) =>
@@ -24,6 +30,7 @@ const buildIdempotencyKey = () =>
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
+  const { user, profile } = useAuth();
   const { items, getCartTotal, clearCart } = useCart();
   const [idempotencyKey] = useState(buildIdempotencyKey);
   const [customerName, setCustomerName] = useState("");
@@ -35,7 +42,7 @@ const CheckoutPage = () => {
   const [city, setCity] = useState("Nairobi");
   const [deliveryNotes, setDeliveryNotes] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash_on_delivery");
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorMessages, setErrorMessages] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const checkoutItems = useMemo(
@@ -43,12 +50,24 @@ const CheckoutPage = () => {
     [items],
   );
 
+  useEffect(() => {
+    if (profile?.fullName && !customerName) {
+      setCustomerName(profile.fullName);
+    } else if (user?.name && !customerName) {
+      setCustomerName(user.name);
+    }
+
+    if (user?.email && !customerEmail) {
+      setCustomerEmail(user.email);
+    }
+  }, [customerEmail, customerName, profile?.fullName, user?.email, user?.name]);
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setErrorMessage(null);
+    setErrorMessages([]);
 
     if (items.length === 0) {
-      setErrorMessage("Your cart is empty.");
+      setErrorMessages(["Your cart is empty. Add something to your cart before placing your order."]);
       return;
     }
 
@@ -80,14 +99,22 @@ const CheckoutPage = () => {
       });
 
       if (payment.success === false) {
-        setErrorMessage(payment.message);
+        setErrorMessages([payment.message]);
         return;
       }
 
       const submission = await submitOrder(request);
 
       if (submission.success === false) {
-        setErrorMessage(submission.errors.join(" "));
+        if (import.meta.env.DEV) {
+          console.error("[checkout] submitOrder failed", submission);
+        }
+
+        setErrorMessages(
+          submission.errors.length
+            ? submission.errors
+            : ["We couldn't place your order. Please review the details and try again."],
+        );
         return;
       }
 
@@ -96,7 +123,7 @@ const CheckoutPage = () => {
         replace: true,
       });
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Checkout could not be completed.");
+      setErrorMessages(toCheckoutErrorMessages(error));
     } finally {
       setIsSubmitting(false);
     }
@@ -114,10 +141,16 @@ const CheckoutPage = () => {
 
         <form className="grid gap-6 lg:grid-cols-[1fr_340px]" onSubmit={handleSubmit}>
           <div className="space-y-6">
-            {errorMessage && (
+            {errorMessages.length > 0 && (
               <Alert variant="destructive">
                 <AlertTitle>Checkout needs attention</AlertTitle>
-                <AlertDescription>{errorMessage}</AlertDescription>
+                <AlertDescription>
+                  <ul className="list-disc list-inside space-y-1">
+                    {errorMessages.map((message, index) => (
+                      <li key={index}>{message}</li>
+                    ))}
+                  </ul>
+                </AlertDescription>
               </Alert>
             )}
 
@@ -126,15 +159,15 @@ const CheckoutPage = () => {
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="customer-name">Your Name</Label>
-                  <Input id="customer-name" value={customerName} onChange={(event) => setCustomerName(event.target.value)} disabled={isSubmitting} />
+                  <Input id="customer-name" value={customerName} onChange={(event) => setCustomerName(event.target.value)} disabled={isSubmitting} required autoComplete="name" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="customer-email">Email</Label>
-                  <Input id="customer-email" type="email" value={customerEmail} onChange={(event) => setCustomerEmail(event.target.value)} disabled={isSubmitting} />
+                  <Input id="customer-email" type="email" value={customerEmail} onChange={(event) => setCustomerEmail(event.target.value)} disabled={isSubmitting} required autoComplete="email" />
                 </div>
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="customer-phone">Phone</Label>
-                  <Input id="customer-phone" value={customerPhone} onChange={(event) => setCustomerPhone(event.target.value)} disabled={isSubmitting} />
+                  <Input id="customer-phone" value={customerPhone} onChange={(event) => setCustomerPhone(event.target.value)} disabled={isSubmitting} required autoComplete="tel" />
                 </div>
               </div>
             </section>
@@ -144,19 +177,19 @@ const CheckoutPage = () => {
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="recipient-name">Recipient Name</Label>
-                  <Input id="recipient-name" value={recipientName} onChange={(event) => setRecipientName(event.target.value)} disabled={isSubmitting} />
+                  <Input id="recipient-name" value={recipientName} onChange={(event) => setRecipientName(event.target.value)} disabled={isSubmitting} required />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="recipient-phone">Recipient Phone</Label>
-                  <Input id="recipient-phone" value={recipientPhone} onChange={(event) => setRecipientPhone(event.target.value)} disabled={isSubmitting} />
+                  <Input id="recipient-phone" value={recipientPhone} onChange={(event) => setRecipientPhone(event.target.value)} disabled={isSubmitting} required autoComplete="tel" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="delivery-city">City</Label>
-                  <Input id="delivery-city" value={city} onChange={(event) => setCity(event.target.value)} disabled={isSubmitting} />
+                  <Input id="delivery-city" value={city} onChange={(event) => setCity(event.target.value)} disabled={isSubmitting} required />
                 </div>
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="delivery-address">Delivery Address</Label>
-                  <Textarea id="delivery-address" value={address} onChange={(event) => setAddress(event.target.value)} disabled={isSubmitting} />
+                  <Textarea id="delivery-address" value={address} onChange={(event) => setAddress(event.target.value)} disabled={isSubmitting} required />
                 </div>
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="delivery-notes">Delivery Notes</Label>

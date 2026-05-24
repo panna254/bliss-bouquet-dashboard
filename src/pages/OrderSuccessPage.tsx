@@ -5,10 +5,12 @@ import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { getOrderById, type Order } from "@/services/orders.service";
+import { useAuth } from "@/contexts/AuthContext";
+import { getCurrentUserOrderById, type Order } from "@/services/orders.service";
 
 const OrderSuccessPage = () => {
   const location = useLocation();
+  const { initialized, isAuthenticated } = useAuth();
   const params = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const orderId = params.get("orderId");
   const [order, setOrder] = useState<Order | null>(null);
@@ -17,6 +19,17 @@ const OrderSuccessPage = () => {
 
   useEffect(() => {
     if (!orderId) {
+      setErrorMessage("Order reference missing. Please visit your orders page or continue shopping.");
+      setIsLoading(false);
+      return;
+    }
+
+    if (!initialized) {
+      return;
+    }
+
+    if (!isAuthenticated) {
+      setErrorMessage("Please sign in to view this order confirmation.");
       setIsLoading(false);
       return;
     }
@@ -25,14 +38,25 @@ const OrderSuccessPage = () => {
 
     const loadOrder = async () => {
       try {
-        const loadedOrder = await getOrderById(orderId);
-        if (isMounted) {
-          setOrder(loadedOrder);
+        const loadedOrder = await getCurrentUserOrderById(orderId);
+
+        if (!isMounted) {
+          return;
         }
+
+        if (!loadedOrder) {
+          setErrorMessage("Unable to verify this order. Please visit your orders page for details.");
+          setOrder(null);
+          return;
+        }
+
+        setOrder(loadedOrder);
       } catch (error) {
-        if (isMounted) {
-          setErrorMessage(error instanceof Error ? error.message : "Order details could not be loaded.");
+        if (!isMounted) {
+          return;
         }
+
+        setErrorMessage("We couldn't load your order confirmation right now. Please visit your orders page or try again later.");
       } finally {
         if (isMounted) {
           setIsLoading(false);
@@ -45,7 +69,7 @@ const OrderSuccessPage = () => {
     return () => {
       isMounted = false;
     };
-  }, [orderId]);
+  }, [initialized, isAuthenticated, orderId]);
 
   return (
     <div className="min-h-screen bg-background">

@@ -4,7 +4,7 @@ import { ShoppingCart, Search, Menu, Heart, X } from "lucide-react";
 import UserMenu from "./UserMenu";
 import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import SearchBar from "./SearchBar";
 import CartPanel from "./CartPanel";
@@ -125,6 +125,7 @@ const Header = () => {
         <DialogContent className="max-w-5xl">
           <DialogHeader>
             <DialogTitle>Search Flowers & Gifts</DialogTitle>
+            <DialogDescription>Search the Bliss Bouquet catalog by product name or category.</DialogDescription>
           </DialogHeader>
           <SearchBar />
         </DialogContent>

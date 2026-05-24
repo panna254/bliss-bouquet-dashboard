@@ -1,6 +1,11 @@
 import { getProductById as getLocalProductById, type Product } from "@/adapters/productAdapter";
 import { getSupabaseClient } from "@/lib/supabaseClient";
 import { requireAdminSession } from "@/services/auth.service";
+import {
+  uploadProductImage,
+  replaceProductImage,
+  isSupabaseStorageUrl,
+} from "@/services/storage.service";
 
 export interface ProductListQuery {
   category?: string;
@@ -27,7 +32,8 @@ export interface CreateProductInput {
   name: string;
   description: string;
   price: number;
-  imageUrl: string;
+  imageUrl?: string;
+  imageFile?: File | null;
   category: string;
   stockQuantity: number;
 }
@@ -174,10 +180,32 @@ export async function listAdminProducts(query?: ProductListQuery): Promise<Admin
   };
 }
 
+const resolveProductImageUrl = async (
+  input: CreateProductInput,
+  existingImageUrl?: string | null,
+): Promise<string> => {
+  if (input.imageFile) {
+    if (existingImageUrl && isSupabaseStorageUrl(existingImageUrl)) {
+      return (await replaceProductImage(existingImageUrl, input.imageFile)).publicUrl;
+    }
+
+    return (await uploadProductImage(input.imageFile)).publicUrl;
+  }
+
+  const imageUrl = input.imageUrl?.trim() ?? "";
+
+  if (!imageUrl) {
+    throw new Error("Product image is required.");
+  }
+
+  return imageUrl;
+};
+
 export async function createProduct(input: CreateProductInput): Promise<AdminProduct> {
   await requireAdminSession();
 
   const supabase = getSupabaseClient();
+  const imageUrl = await resolveProductImageUrl(input);
 
   const { data, error } = await supabase
     .from("products")
@@ -185,7 +213,7 @@ export async function createProduct(input: CreateProductInput): Promise<AdminPro
       name: input.name.trim(),
       description: input.description.trim(),
       price: input.price,
-      image_url: input.imageUrl.trim(),
+      image_url: imageUrl,
       category: input.category.trim(),
       stock_quantity: input.stockQuantity,
     })
@@ -203,6 +231,24 @@ export async function updateProduct(productId: string, input: UpdateProductInput
   await requireAdminSession();
 
   const supabase = getSupabaseClient();
+  let imageUrl = input.imageUrl?.trim() ?? "";
+
+  if (input.imageFile) {
+    const { data: currentProductRow, error: currentProductError } = await supabase
+      .from("products")
+      .select("image_url")
+      .eq("id", productId)
+      .maybeSingle();
+
+    if (currentProductError) {
+      throw normalizeProductError("Unable to fetch existing product image", currentProductError);
+    }
+
+    const currentImageUrl = (currentProductRow as { image_url?: string | null } | null)?.image_url ?? null;
+    imageUrl = await resolveProductImageUrl(input, currentImageUrl);
+  } else {
+    imageUrl = await resolveProductImageUrl(input);
+  }
 
   const { data, error } = await supabase
     .from("products")
@@ -210,7 +256,7 @@ export async function updateProduct(productId: string, input: UpdateProductInput
       name: input.name.trim(),
       description: input.description.trim(),
       price: input.price,
-      image_url: input.imageUrl.trim(),
+      image_url: imageUrl,
       category: input.category.trim(),
       stock_quantity: input.stockQuantity,
     })
@@ -246,7 +292,14 @@ export async function getProducts(): Promise<Product[]> {
   return products;
 }
 
+const isUuid = (value: string): boolean =>
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
+
 export async function getProductById(productId: string): Promise<Product | null> {
+  if (!isUuid(productId)) {
+    return null;
+  }
+
   const supabase = getSupabaseClient();
 
   const { data, error } = await supabase
@@ -265,10 +318,12 @@ export async function getProductById(productId: string): Promise<Product | null>
 export async function getCheckoutProductByCartId(productId: string): Promise<Product | null> {
   let supabaseProduct: Product | null = null;
 
-  try {
-    supabaseProduct = await getProductById(productId);
-  } catch {
-    supabaseProduct = null;
+  if (isUuid(productId)) {
+    try {
+      supabaseProduct = await getProductById(productId);
+    } catch {
+      supabaseProduct = null;
+    }
   }
 
   if (supabaseProduct) {
