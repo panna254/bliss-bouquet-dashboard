@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ShoppingCart, Search, Menu, Heart, X } from "lucide-react";
+import UserMenu from "./UserMenu";
 import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -85,6 +86,9 @@ const Header = () => {
           <Button variant="ghost" size="icon" className="hover:bg-muted">
             <Heart className="h-5 w-5" />
           </Button>
+
+          {/* User / Login */}
+          <UserMenu />
 
           {/* Cart */}
           <Button 

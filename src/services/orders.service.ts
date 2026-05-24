@@ -1,4 +1,5 @@
 import { getSupabaseClient } from "@/lib/supabaseClient";
+import { requireAdminSession } from "@/services/auth.service";
 
 export type OrderStatus =
   | "pending"
@@ -7,6 +8,16 @@ export type OrderStatus =
   | "out_for_delivery"
   | "delivered"
   | "cancelled";
+
+export type AdminOrderStatus = Extract<OrderStatus, "pending" | "confirmed" | "delivered">;
+
+export const ADMIN_ORDER_STATUSES: readonly AdminOrderStatus[] = ["pending", "confirmed", "delivered"];
+
+const adminOrderStatusTransitions: Record<AdminOrderStatus, readonly AdminOrderStatus[]> = {
+  pending: ["confirmed"],
+  confirmed: ["delivered"],
+  delivered: [],
+};
 
 export interface OrderItem {
   productId: string;
@@ -32,6 +43,7 @@ export interface OrderDeliveryDetails {
 
 export interface Order {
   id: string;
+  userId?: string | null;
   status: OrderStatus;
   customer: OrderCustomer;
   delivery: OrderDeliveryDetails;
@@ -52,12 +64,15 @@ export interface CreateOrderInput {
 export interface OrdersService {
   createOrder(input: CreateOrderInput): Promise<Order>;
   getOrderById(orderId: string): Promise<Order | null>;
+  getAdminOrderById(orderId: string): Promise<Order | null>;
   listOrders(): Promise<Order[]>;
-  updateOrderStatus(orderId: string, status: OrderStatus): Promise<Order>;
+  listCurrentUserOrders(): Promise<Order[]>;
+  updateOrderStatus(orderId: string, status: AdminOrderStatus): Promise<Order>;
 }
 
 interface OrderRow {
   id: string;
+  user_id?: string | null;
   status: OrderStatus;
   total_amount: number | string;
   created_at: string;
@@ -109,6 +124,7 @@ const toOrder = (
 
   return {
     id: row.id,
+    userId: row.user_id ?? null,
     status: row.status,
     customer,
     delivery,
@@ -129,6 +145,29 @@ const normalizeOrderError = (message: string, error: unknown): Error => {
   return new Error(message);
 };
 
+export const isSupportedAdminOrderStatus = (status: string): status is AdminOrderStatus =>
+  ADMIN_ORDER_STATUSES.includes(status as AdminOrderStatus);
+
+export const canTransitionOrderStatus = (currentStatus: OrderStatus, nextStatus: OrderStatus): boolean => {
+  if (currentStatus === nextStatus) {
+    return isSupportedAdminOrderStatus(currentStatus);
+  }
+
+  if (!isSupportedAdminOrderStatus(currentStatus) || !isSupportedAdminOrderStatus(nextStatus)) {
+    return false;
+  }
+
+  return adminOrderStatusTransitions[currentStatus].includes(nextStatus);
+};
+
+export const getAvailableOrderStatusUpdates = (currentStatus: OrderStatus): AdminOrderStatus[] => {
+  if (!isSupportedAdminOrderStatus(currentStatus)) {
+    return [];
+  }
+
+  return ADMIN_ORDER_STATUSES.filter((status) => canTransitionOrderStatus(currentStatus, status));
+};
+
 export async function createOrder(input: CreateOrderInput): Promise<Order> {
   const supabase = getSupabaseClient();
   const subtotal = calculateSubtotal(input.items);
@@ -144,7 +183,7 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
       total_amount: total,
       status: "pending",
     })
-    .select("id,status,total_amount,created_at")
+    .select("id,user_id,status,total_amount,created_at")
     .single();
 
   if (orderError || !orderRow) {
@@ -164,7 +203,7 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
     const { error: cleanupError } = await supabase.from("orders").delete().eq("id", orderRow.id);
 
     if (cleanupError) {
-      console.error("Order item insert failed and order cleanup also failed", cleanupError);
+      // RLS/database failures are surfaced through the original order-items error below.
     }
 
     throw normalizeOrderError("Unable to create order items", itemsError);
@@ -178,7 +217,7 @@ export async function getOrderById(orderId: string): Promise<Order | null> {
 
   const { data: orderRow, error: orderError } = await supabase
     .from("orders")
-    .select("id,status,total_amount,created_at")
+    .select("id,user_id,status,total_amount,created_at")
     .eq("id", orderId)
     .maybeSingle();
 
@@ -209,12 +248,20 @@ export async function getOrderById(orderId: string): Promise<Order | null> {
   return toOrder(orderRow as OrderRow, items);
 }
 
+export async function getAdminOrderById(orderId: string): Promise<Order | null> {
+  await requireAdminSession();
+
+  return getOrderById(orderId);
+}
+
 export async function listOrders(): Promise<Order[]> {
+  await requireAdminSession();
+
   const supabase = getSupabaseClient();
 
   const { data, error } = await supabase
     .from("orders")
-    .select("id,status,total_amount,created_at")
+    .select("id,user_id,status,total_amount,created_at")
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -224,18 +271,70 @@ export async function listOrders(): Promise<Order[]> {
   return ((data ?? []) as OrderRow[]).map((row) => toOrder(row, []));
 }
 
-export async function updateOrderStatus(orderId: string, status: OrderStatus): Promise<Order> {
+export async function listCurrentUserOrders(): Promise<Order[]> {
   const supabase = getSupabaseClient();
+  const { data: userData, error: userError } = await supabase.auth.getUser();
+
+  if (userError || !userData.user) {
+    throw normalizeOrderError("Unable to load customer orders", userError);
+  }
+
+  const { data, error } = await supabase
+    .from("orders")
+    .select("id,user_id,status,total_amount,created_at")
+    .eq("user_id", userData.user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw normalizeOrderError("Unable to fetch customer orders", error);
+  }
+
+  return ((data ?? []) as OrderRow[]).map((row) => toOrder(row, []));
+}
+
+export async function updateOrderStatus(orderId: string, status: AdminOrderStatus): Promise<Order> {
+  await requireAdminSession();
+
+  const supabase = getSupabaseClient();
+
+  const { data: currentOrderRow, error: currentOrderError } = await supabase
+    .from("orders")
+    .select("id,user_id,status,total_amount,created_at")
+    .eq("id", orderId)
+    .maybeSingle();
+
+  if (currentOrderError) {
+    throw normalizeOrderError(`Unable to verify order ${orderId}`, currentOrderError);
+  }
+
+  if (!currentOrderRow) {
+    throw new Error("Order not found.");
+  }
+
+  const currentOrder = currentOrderRow as OrderRow;
+
+  if (!canTransitionOrderStatus(currentOrder.status, status)) {
+    throw new Error(`Cannot change order status from ${currentOrder.status} to ${status}.`);
+  }
+
+  if (currentOrder.status === status) {
+    return toOrder(currentOrder, []);
+  }
 
   const { data, error } = await supabase
     .from("orders")
     .update({ status })
     .eq("id", orderId)
-    .select("id,status,total_amount,created_at")
-    .single();
+    .eq("status", currentOrder.status)
+    .select("id,user_id,status,total_amount,created_at")
+    .maybeSingle();
 
-  if (error || !data) {
+  if (error) {
     throw normalizeOrderError(`Unable to update order ${orderId}`, error);
+  }
+
+  if (!data) {
+    throw new Error("Order status changed before this update could be saved. Refresh and try again.");
   }
 
   return toOrder(data as OrderRow, []);

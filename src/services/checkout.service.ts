@@ -1,4 +1,4 @@
-import { getProductById } from "@/services/products.service";
+import { getCheckoutProductByCartId } from "@/services/products.service";
 import { createOrder, type Order, type OrderCustomer, type OrderDeliveryDetails, type OrderItem } from "@/services/orders.service";
 
 export type PaymentMethod = "mpesa" | "card" | "cash_on_delivery";
@@ -213,7 +213,7 @@ export async function validateCheckout(request: CheckoutRequest): Promise<Checko
       }
 
       try {
-        const product = await getProductById(item.productId);
+        const product = await getCheckoutProductByCartId(item.productId);
 
         if (!product) {
           errors.push(`Product ${item.productId} is no longer available.`);
@@ -314,11 +314,11 @@ export async function submitOrder(request: CheckoutRequest): Promise<CheckoutSub
 export async function submitCheckout(request: CheckoutRequest): Promise<CheckoutResult> {
   const submission = await submitOrder(request);
 
-  if (!submission.success) {
-    throw new Error(submission.errors.join(" "));
+  if (submission.success) {
+    return submission.result;
   }
 
-  return submission.result;
+  throw new Error(("errors" in submission ? submission.errors : ["Checkout failed."]).join(" "));
 }
 
 async function submitOrderOnce(

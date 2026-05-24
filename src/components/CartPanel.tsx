@@ -5,8 +5,10 @@ import { Badge } from '@/components/ui/badge';
 import { X, Plus, Minus, ShoppingBag, Trash2 } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
+import { useNavigate } from 'react-router-dom';
 
 const CartPanel = () => {
+  const navigate = useNavigate();
   const { 
     items, 
     isCartOpen, 
@@ -126,7 +128,14 @@ const CartPanel = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Button className="w-full" size="lg">
+                  <Button
+                    className="w-full"
+                    size="lg"
+                    onClick={() => {
+                      closeCart();
+                      navigate("/checkout");
+                    }}
+                  >
                     Proceed to Checkout
                   </Button>
                   <Button 
