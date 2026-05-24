@@ -4,6 +4,7 @@ import AdminGuard from "@/admin/guards/AdminGuard";
 import {
   AdminCustomersPage,
   AdminDashboardPage,
+  AdminOrderDetailPage,
   AdminOrdersPage,
   AdminProductsPage,
   AdminSettingsPage,
@@ -15,6 +16,7 @@ const adminRoutes = (
       <Route index element={<AdminDashboardPage />} />
       <Route path="products" element={<AdminProductsPage />} />
       <Route path="orders" element={<AdminOrdersPage />} />
+      <Route path="orders/:orderId" element={<AdminOrderDetailPage />} />
       <Route path="customers" element={<AdminCustomersPage />} />
       <Route path="settings" element={<AdminSettingsPage />} />
     </Route>

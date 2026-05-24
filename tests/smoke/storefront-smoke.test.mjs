@@ -27,6 +27,12 @@ test("routing keeps static pages before the dynamic category route", () => {
     'path="/delivery-info"',
     'path="/care-guide"',
     'path="/returns"',
+    'path="/login"',
+    'path="/signup"',
+    'path="/cart"',
+    'path="/order-success"',
+    'path="/checkout"',
+    'path="/orders"',
   ];
   const adminRoute = "{adminRoutes}";
   const categoryRoute = 'path="/:category"';

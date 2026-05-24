@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { getCurrentSession } from "@/services/auth.service";
+import { useAuth } from "@/contexts/AuthContext";
+import { buildLoginRedirectPath } from "@/services/authRedirect.service";
 
 type AuthStatus = "checking" | "authorized" | "unauthenticated" | "unauthorized";
 
@@ -11,47 +12,36 @@ type AuthStatus = "checking" | "authorized" | "unauthenticated" | "unauthorized"
  * Prevents UI flashing by only rendering content after auth check completes.
  *
  * Flow:
- * 1. "checking" - Verifying session and permissions (no UI rendered)
- * 2. "authorized" - Admin verified, render nested routes
- * 3. "unauthenticated" - No session, redirect to home page
- * 4. "unauthorized" - Non-admin user, redirect to home page
+ * 1. "checking" - Verifying trusted profile role (no UI rendered)
+ * 2. "authorized" - profiles.role is admin, render nested routes
+ * 3. "unauthenticated" - No session, redirect to login
+ * 4. "unauthorized" - Non-admin profile, redirect to home page
  */
 const AdminGuard = () => {
   const navigate = useNavigate();
+  const { initialized, isAdmin, isAuthenticated, loading } = useAuth();
   const [status, setStatus] = useState<AuthStatus>("checking");
 
   useEffect(() => {
-    const verifyAdminAccess = async () => {
-      try {
-        const session = await getCurrentSession();
+    if (!initialized || loading) {
+      setStatus("checking");
+      return;
+    }
 
-        // Unauthenticated users: no session
-        if (!session) {
-          setStatus("unauthenticated");
-          navigate("/", { replace: true });
-          return;
-        }
+    if (!isAuthenticated) {
+      setStatus("unauthenticated");
+      navigate(buildLoginRedirectPath("/admin"), { replace: true });
+      return;
+    }
 
-        // Authenticated non-admin users: session exists but role is not admin
-        if (session.user.role !== "admin") {
-          setStatus("unauthorized");
-          navigate("/", { replace: true });
-          return;
-        }
+    if (!isAdmin) {
+      setStatus("unauthorized");
+      navigate("/", { replace: true });
+      return;
+    }
 
-        // Authenticated admin users: authorize
-        setStatus("authorized");
-      } catch (error) {
-        // Error checking auth (e.g., network issue, session load failure)
-        // Treat as unauthenticated for security
-        console.error("Admin guard auth check failed:", error);
-        setStatus("unauthenticated");
-        navigate("/", { replace: true });
-      }
-    };
-
-    verifyAdminAccess();
-  }, [navigate]);
+    setStatus("authorized");
+  }, [initialized, isAdmin, isAuthenticated, loading, navigate]);
 
   // Only render outlet once authorization is confirmed
   // This prevents unauthorized UI flashing

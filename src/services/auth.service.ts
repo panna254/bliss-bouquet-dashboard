@@ -1,4 +1,4 @@
-import type { Session, User } from "@supabase/supabase-js";
+import type { AuthChangeEvent, Session, User } from "@supabase/supabase-js";
 import { getSupabaseClient } from "@/lib/supabaseClient";
 
 export type AuthRole = "customer" | "admin";
@@ -10,8 +10,16 @@ export interface AuthUser {
   role: AuthRole;
 }
 
+export interface AuthProfile {
+  id: string;
+  email: string;
+  fullName?: string;
+  role: AuthRole;
+}
+
 export interface AuthSession {
   user: AuthUser;
+  profile: AuthProfile | null;
   accessToken: string;
   expiresAt: string;
 }
@@ -19,6 +27,10 @@ export interface AuthSession {
 export interface LoginCredentials {
   email: string;
   password: string;
+}
+
+export interface SignupCredentials extends LoginCredentials {
+  fullName: string;
 }
 
 export interface AuthServiceError {
@@ -33,12 +45,26 @@ export interface AuthServiceResult<T> {
 
 export interface AuthService {
   login(credentials: LoginCredentials): Promise<AuthSession>;
+  signup(credentials: SignupCredentials): Promise<AuthSession>;
   logout(): Promise<void>;
   getCurrentSession(): Promise<AuthSession | null>;
   requireAdminSession(): Promise<AuthSession>;
 }
 
+export type AdminVerificationFailureCode = "unauthenticated" | "unauthorized";
+
+export class AdminVerificationError extends Error {
+  code: AdminVerificationFailureCode;
+
+  constructor(message: string, code: AdminVerificationFailureCode) {
+    super(message);
+    this.name = "AdminVerificationError";
+    this.code = code;
+  }
+}
+
 interface ProfileRow {
+  id?: string | null;
   full_name: string | null;
   email: string | null;
   role: AuthRole | null;
@@ -82,7 +108,7 @@ const getProfileForUser = async (userId: string): Promise<AuthServiceResult<Prof
 
   const { data, error } = await supabase
     .from("profiles")
-    .select("full_name,email,role")
+    .select("id,full_name,email,role")
     .eq("id", userId)
     .maybeSingle();
 
@@ -94,12 +120,27 @@ const getProfileForUser = async (userId: string): Promise<AuthServiceResult<Prof
   return authSuccess((data as ProfileRow | null) ?? null);
 };
 
+const resolveUserRole = (profile: ProfileRow | null): AuthRole => (profile?.role === "admin" ? "admin" : "customer");
+
 const toAuthUser = (user: User, profile: ProfileRow | null): AuthUser => ({
   id: user.id,
   email: profile?.email ?? user.email ?? "",
   name: profile?.full_name ?? getMetadataName(user),
-  role: profile?.role === "admin" ? "admin" : "customer",
+  role: resolveUserRole(profile),
 });
+
+const toAuthProfile = (user: User, profile: ProfileRow | null): AuthProfile | null => {
+  if (!profile) {
+    return null;
+  }
+
+  return {
+    id: profile.id ?? user.id,
+    email: profile.email ?? user.email ?? "",
+    fullName: profile.full_name ?? undefined,
+    role: resolveUserRole(profile),
+  };
+};
 
 const toAuthSession = async (session: Session): Promise<AuthServiceResult<AuthSession>> => {
   const profileResult = await getProfileForUser(session.user.id);
@@ -110,6 +151,7 @@ const toAuthSession = async (session: Session): Promise<AuthServiceResult<AuthSe
 
   return authSuccess({
     user: toAuthUser(session.user, profileResult.data),
+    profile: toAuthProfile(session.user, profileResult.data),
     accessToken: session.access_token,
     expiresAt: session.expires_at ? new Date(session.expires_at * 1000).toISOString() : "",
   });
@@ -135,6 +177,54 @@ export async function signIn(credentials: LoginCredentials): Promise<AuthService
     return toAuthSession(data.session);
   } catch (error) {
     const normalizedError = normalizeAuthError("Unable to sign in.", error);
+    return authFailure(normalizedError.message, normalizedError.code);
+  }
+}
+
+export async function signUp(credentials: SignupCredentials): Promise<AuthServiceResult<AuthSession>> {
+  try {
+    const supabase = getSupabaseClient();
+    const fullName = credentials.fullName.trim();
+    const email = credentials.email.trim();
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password: credentials.password,
+      options: {
+        data: {
+          full_name: fullName,
+        },
+      },
+    });
+
+    if (error) {
+      const normalizedError = normalizeAuthError("Unable to create account.", error);
+      return authFailure(normalizedError.message, normalizedError.code);
+    }
+
+    if (!data.user) {
+      return authFailure("Unable to create account. No user was returned.");
+    }
+
+    const { error: profileError } = await supabase.from("profiles").upsert({
+      id: data.user.id,
+      full_name: fullName,
+      email,
+      role: "customer",
+    });
+
+    if (profileError) {
+      const normalizedError = normalizeAuthError("Account was created but profile setup failed.", profileError);
+      return authFailure(normalizedError.message, normalizedError.code);
+    }
+
+    if (!data.session) {
+      return authFailure("Account created. Please confirm your email before signing in.");
+    }
+
+    return toAuthSession(data.session);
+  } catch (error) {
+    const normalizedError = normalizeAuthError("Unable to create account.", error);
     return authFailure(normalizedError.message, normalizedError.code);
   }
 }
@@ -184,13 +274,17 @@ export async function getCurrentUser(): Promise<AuthServiceResult<AuthUser | nul
 }
 
 export async function isAdmin(): Promise<AuthServiceResult<boolean>> {
-  const currentUserResult = await getCurrentUser();
+  try {
+    await requireAdminSession();
+    return authSuccess(true);
+  } catch (error) {
+    if (error instanceof AdminVerificationError) {
+      return authSuccess(false);
+    }
 
-  if (currentUserResult.error) {
-    return authFailure(currentUserResult.error.message, currentUserResult.error.code);
+    const normalizedError = normalizeAuthError("Unable to verify admin session.", error);
+    return authFailure(normalizedError.message, normalizedError.code);
   }
-
-  return authSuccess(currentUserResult.data?.role === "admin");
 }
 
 export async function login(credentials: LoginCredentials): Promise<AuthSession> {
@@ -198,6 +292,16 @@ export async function login(credentials: LoginCredentials): Promise<AuthSession>
 
   if (result.error || !result.data) {
     throw new Error(result.error?.message ?? "Unable to sign in.");
+  }
+
+  return result.data;
+}
+
+export async function signup(credentials: SignupCredentials): Promise<AuthSession> {
+  const result = await signUp(credentials);
+
+  if (result.error || !result.data) {
+    throw new Error(result.error?.message ?? "Unable to create account.");
   }
 
   return result.data;
@@ -239,15 +343,46 @@ export async function getCurrentSession(): Promise<AuthSession | null> {
 }
 
 export async function requireAdminSession(): Promise<AuthSession> {
-  const session = await getCurrentSession();
+  const supabase = getSupabaseClient();
+  const { data, error } = await supabase.auth.getSession();
 
-  if (!session) {
-    throw new Error("An authenticated admin session is required.");
+  if (error) {
+    const normalizedError = normalizeAuthError("Unable to load current session.", error);
+    throw new Error(normalizedError.message);
   }
 
-  if (session.user.role !== "admin") {
-    throw new Error("An admin role is required.");
+  if (!data.session) {
+    throw new AdminVerificationError("An authenticated admin session is required.", "unauthenticated");
   }
 
-  return session;
+  const profileResult = await getProfileForUser(data.session.user.id);
+
+  if (profileResult.error) {
+    throw new Error(profileResult.error.message);
+  }
+
+  if (profileResult.data?.role !== "admin") {
+    throw new AdminVerificationError("An admin role is required.", "unauthorized");
+  }
+
+  return {
+    user: toAuthUser(data.session.user, profileResult.data),
+    profile: toAuthProfile(data.session.user, profileResult.data),
+    accessToken: data.session.access_token,
+    expiresAt: data.session.expires_at ? new Date(data.session.expires_at * 1000).toISOString() : "",
+  };
 }
+
+export type AuthStateChangeUnsubscribe = () => void;
+export type AuthStateChangeHandler = (event: AuthChangeEvent) => void;
+
+export const subscribeToAuthStateChanges = (onChange: AuthStateChangeHandler): AuthStateChangeUnsubscribe => {
+  const supabase = getSupabaseClient();
+  const { data } = supabase.auth.onAuthStateChange((event) => {
+    window.setTimeout(() => onChange(event), 0);
+  });
+
+  return () => {
+    data.subscription.unsubscribe();
+  };
+};

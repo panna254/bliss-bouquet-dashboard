@@ -1,4 +1,4 @@
-import { getProductById } from "@/services/products.service";
+import { getCheckoutProductByCartId } from "@/services/products.service";
 import { createOrder, type Order, type OrderCustomer, type OrderDeliveryDetails, type OrderItem } from "@/services/orders.service";
 
 export type PaymentMethod = "mpesa" | "card" | "cash_on_delivery";
@@ -213,7 +213,7 @@ export async function validateCheckout(request: CheckoutRequest): Promise<Checko
       }
 
       try {
-        const product = await getProductById(item.productId);
+        const product = await getCheckoutProductByCartId(item.productId);
 
         if (!product) {
           errors.push(`Product ${item.productId} is no longer available.`);

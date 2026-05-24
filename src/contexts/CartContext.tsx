@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import type { Product } from '@/adapters/productAdapter';
 import { useToast } from '@/hooks/use-toast';
+import { checkoutCartPersistencePolicy } from '@/services/checkout.service';
 
 interface CartItem extends Product {
   quantity: number;
@@ -22,6 +23,58 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null;
+
+const isCartItem = (value: unknown): value is CartItem => {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  return (
+    typeof value.id === "string" &&
+    typeof value.name === "string" &&
+    typeof value.price === "number" &&
+    typeof value.image === "string" &&
+    typeof value.rating === "number" &&
+    typeof value.reviewCount === "number" &&
+    typeof value.description === "string" &&
+    typeof value.category === "string" &&
+    typeof value.quantity === "number" &&
+    Number.isInteger(value.quantity) &&
+    value.quantity > 0
+  );
+};
+
+const restoreCartItems = (): CartItem[] => {
+  try {
+    const persistedCart = window.localStorage.getItem(checkoutCartPersistencePolicy.key);
+
+    if (!persistedCart) {
+      return [];
+    }
+
+    const parsedCart: unknown = JSON.parse(persistedCart);
+
+    if (!isRecord(parsedCart) || !Array.isArray(parsedCart.items) || typeof parsedCart.persistedAt !== "string") {
+      return [];
+    }
+
+    const persistedAt = Date.parse(parsedCart.persistedAt);
+    const maxAgeMs = checkoutCartPersistencePolicy.ttlHours * 60 * 60 * 1000;
+
+    if (!Number.isFinite(persistedAt) || Date.now() - persistedAt > maxAgeMs) {
+      window.localStorage.removeItem(checkoutCartPersistencePolicy.key);
+      return [];
+    }
+
+    return parsedCart.items.filter(isCartItem);
+  } catch {
+    window.localStorage.removeItem(checkoutCartPersistencePolicy.key);
+    return [];
+  }
+};
+
 export const useCart = () => {
   const context = useContext(CartContext);
   if (context === undefined) {
@@ -35,9 +88,23 @@ interface CartProviderProps {
 }
 
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(() => restoreCartItems());
   const [isCartOpen, setIsCartOpen] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(
+        checkoutCartPersistencePolicy.key,
+        JSON.stringify({
+          persistedAt: new Date().toISOString(),
+          items,
+        }),
+      );
+    } catch {
+      // Cart persistence should not interrupt shopping.
+    }
+  }, [items]);
 
   const addToCart = (product: Product, quantity = 1) => {
     setItems(currentItems => {

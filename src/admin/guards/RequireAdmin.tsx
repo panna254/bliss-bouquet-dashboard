@@ -1,7 +1,7 @@
-import { Outlet } from "react-router-dom";
+import AdminGuard from "./AdminGuard";
 
 const RequireAdmin = () => {
-  return <Outlet />;
+  return <AdminGuard />;
 };
 
 export default RequireAdmin;
