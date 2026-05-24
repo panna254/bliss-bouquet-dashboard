@@ -27,16 +27,19 @@ test("routing keeps static pages before the dynamic category route", () => {
     'path="/care-guide"',
     'path="/returns"',
   ];
+  const adminRoute = 'path="/admin"';
   const categoryRoute = 'path="/:category"';
   const catchAllRoute = 'path="*"';
 
   assert.equal((app.match(new RegExp(categoryRoute, "g")) ?? []).length, 1);
+  assert.equal((app.match(new RegExp(adminRoute, "g")) ?? []).length, 1);
 
   for (const route of staticRoutes) {
     assert.ok(app.indexOf(route) > -1, `${route} should exist`);
     assert.ok(app.indexOf(route) < app.indexOf(categoryRoute), `${route} should be before /:category`);
   }
 
+  assert.ok(app.indexOf(adminRoute) < app.indexOf(categoryRoute), "/admin should be before /:category");
   assert.ok(app.indexOf(categoryRoute) < app.indexOf(catchAllRoute), "category route should be before catch-all");
 });
 
