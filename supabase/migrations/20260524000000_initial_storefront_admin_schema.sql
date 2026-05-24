@@ -33,6 +33,32 @@ create table if not exists public.profiles (
   created_at timestamptz not null default now()
 );
 
+-- Dashboard/manual profiles often have role as text; align with app_role when re-running migration 1.
+do $$
+begin
+  if exists (
+    select 1
+    from information_schema.columns
+    where table_schema = 'public'
+      and table_name = 'profiles'
+      and column_name = 'role'
+      and data_type in ('text', 'character varying')
+  ) then
+    alter table public.profiles alter column role drop default;
+    alter table public.profiles
+      alter column role type public.app_role
+      using (
+        case
+          when role is null or trim(role::text) = '' then 'customer'
+          else lower(trim(role::text))
+        end
+      )::public.app_role;
+    alter table public.profiles
+      alter column role set default 'customer'::public.app_role;
+    alter table public.profiles alter column role set not null;
+  end if;
+end $$;
+
 create table if not exists public.products (
   id uuid primary key default extensions.gen_random_uuid(),
   name text not null,

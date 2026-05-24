@@ -9,6 +9,7 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "test": "node --test tests/smoke/*.test.mjs",
+    "verify:storage": "node supabase/scripts/verify_storage_setup.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
