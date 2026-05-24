@@ -82,7 +82,7 @@ export async function listProducts(query?: ProductListQuery): Promise<ProductLis
   const search = query?.search?.trim();
 
   if (search) {
-    const escapedSearch = search.replaceAll("%", "\\%").replaceAll("_", "\\_");
+    const escapedSearch = search.replace(/[%_]/g, "\\$&");
     request = request.or(`name.ilike.%${escapedSearch}%,description.ilike.%${escapedSearch}%`);
   }
 

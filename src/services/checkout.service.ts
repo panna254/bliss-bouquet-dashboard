@@ -314,11 +314,11 @@ export async function submitOrder(request: CheckoutRequest): Promise<CheckoutSub
 export async function submitCheckout(request: CheckoutRequest): Promise<CheckoutResult> {
   const submission = await submitOrder(request);
 
-  if (!submission.success) {
-    throw new Error(submission.errors.join(" "));
+  if (submission.success) {
+    return submission.result;
   }
 
-  return submission.result;
+  throw new Error(("errors" in submission ? submission.errors : ["Checkout failed."]).join(" "));
 }
 
 async function submitOrderOnce(
