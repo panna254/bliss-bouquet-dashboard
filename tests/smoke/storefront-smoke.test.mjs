@@ -61,6 +61,9 @@ test("category navigation uses validated SEO-friendly slugs", () => {
   assert.match(categoryPage, /const config = categoryConfigs\[categorySlug\]/);
   assert.match(categoryPage, /if \(!config\)/);
   assert.match(categoryPage, /return <NotFound \/>/);
+  assert.match(categoryPage, /loadCategoryPageCatalog/);
+  assert.match(categoryPage, /from "@\/services\/products.service"/);
+  assert.doesNotMatch(categoryPage, /from "@\/adapters\/productAdapter"/);
 
   for (const slug of expectedSlugs) {
     assert.match(categoryPage, new RegExp(`'${slug}'`), `${slug} should be configured`);
@@ -73,10 +76,14 @@ test("category navigation uses validated SEO-friendly slugs", () => {
 
 test("product access flows through the adapter boundary", () => {
   const adapter = read("src/adapters/productAdapter.ts");
+  const allowedCatalogImports = new Set([
+    "src/adapters/productAdapter.ts",
+    "src/services/productNormalization.ts",
+  ]);
   const sourceFiles = walkFiles("src").filter((file) => /\.(ts|tsx)$/.test(file));
   const directProductImports = sourceFiles.filter((file) => {
     const source = read(file);
-    return source.includes("@/data/products") && file !== "src/adapters/productAdapter.ts";
+    return source.includes("@/data/products") && !allowedCatalogImports.has(file);
   });
 
   assert.deepEqual(directProductImports, []);
@@ -97,10 +104,13 @@ test("product cards keep render-critical product fields visible", () => {
   assert.match(productCard, /Add to Cart/);
   assert.match(productCard, /addToCart\(product\)/);
 
-  assert.match(indexPage, /getProducts\(\)/);
-  assert.match(indexPage, /getProductsByCategory\(selectedCategory\)/);
-  assert.match(featuredCarousel, /getProducts\(\)/);
-  assert.match(featuredCarousel, /filter\(p => p\.isPopular\)/);
+  assert.match(indexPage, /loadHomepageCatalog/);
+  assert.match(indexPage, /filterHomepageProductsByCategory/);
+  assert.match(indexPage, /<ProductCard \{\.\.\.product\} \/>/);
+  assert.match(featuredCarousel, /loadFeaturedProducts/);
+  assert.match(featuredCarousel, /from "@\/services\/products.service"/);
+  assert.match(featuredCarousel, /addToCart/);
+  assert.doesNotMatch(featuredCarousel, /from "@\/adapters\/productAdapter"/);
 });
 
 test("cart totals are calculated from item price times quantity", () => {

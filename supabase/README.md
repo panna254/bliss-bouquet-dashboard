@@ -10,6 +10,7 @@ Apply migrations **in filename order** in the Supabase SQL Editor (or `supabase 
 | 2 | `20260524120000_add_order_customer_delivery_columns.sql` | `orders.customer`, `orders.delivery` |
 | 3 | `20260524130000_checkout_support.sql` | Profile insert policy + product catalog seed |
 | 4 | `20260524140000_rls_policies.sql` | Public RLS (`bbk_*`) + `is_admin()` (no `storage.*` SQL on Cloud) |
+| 5 | `20260524150000_add_product_is_popular.sql` | `products.is_popular` for admin featured toggle |
 | — | [STORAGE_POLICIES.md](./STORAGE_POLICIES.md) | **Optional:** `product-images` bucket policies (admin uploads only) |
 
 If you already created tables or policies manually:

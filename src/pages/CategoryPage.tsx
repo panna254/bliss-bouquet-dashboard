@@ -6,8 +6,13 @@ import ProductCard from "@/components/ProductCard";
 import NotFound from "@/pages/NotFound";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { getProducts, getProductsByCategory } from "@/adapters/productAdapter";
-import { useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  loadCategoryPageCatalog,
+  type CategoryPageLoadConfig,
+  type HomepageCatalogResult,
+} from "@/services/products.service";
+import { useCallback, useEffect, useState } from "react";
 import { Grid, List } from "lucide-react";
 
 interface CategoryConfig {
@@ -55,31 +60,64 @@ const categoryConfigs: Record<string, CategoryConfig> = {
   }
 };
 
+const INITIAL_DISPLAY_COUNT = 12;
+const DISPLAY_INCREMENT = 12;
+
+const toStructuredDataImage = (image: string): string => {
+  if (/^https?:\/\//i.test(image)) {
+    return image;
+  }
+
+  return `https://blissbouquetkenya.com${image.startsWith("/") ? image : `/${image}`}`;
+};
+
+const toCategoryLoadConfig = (config: CategoryConfig): CategoryPageLoadConfig => ({
+  category: config.category,
+  occasion: config.occasion,
+});
+
 const CategoryPage = () => {
   const { category } = useParams<{ category: string }>();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [displayCount, setDisplayCount] = useState(12);
+  const [displayCount, setDisplayCount] = useState(INITIAL_DISPLAY_COUNT);
+  const [catalog, setCatalog] = useState<HomepageCatalogResult | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const categorySlug = category?.toLowerCase() ?? "";
   const config = categoryConfigs[categorySlug];
-  
+
+  const loadCatalog = useCallback(async () => {
+    if (!config) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const result = await loadCategoryPageCatalog(toCategoryLoadConfig(config));
+      setCatalog(result);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [config]);
+
+  useEffect(() => {
+    void loadCatalog();
+  }, [loadCatalog]);
+
+  useEffect(() => {
+    setDisplayCount(INITIAL_DISPLAY_COUNT);
+  }, [categorySlug]);
+
   if (!config) {
     return <NotFound />;
   }
 
-  const filteredProducts = config.category
-    ? getProductsByCategory(config.category)
-    : getProducts().filter(product => {
-        if (config.occasion) {
-          // For occasion-based filtering, we'll check the product name and description
-          const searchText = `${product.name} ${product.description}`.toLowerCase();
-          return searchText.includes(config.occasion);
-        }
-        return false;
-      });
-
+  const filteredProducts = catalog?.products ?? [];
   const displayedProducts = filteredProducts.slice(0, displayCount);
   const hasMore = displayCount < filteredProducts.length;
+  const showProductSkeleton = isLoading && filteredProducts.length === 0;
+  const showEmptyState = !isLoading && filteredProducts.length === 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -112,7 +150,7 @@ const CategoryPage = () => {
                 "position": index + 1,
                 "name": product.name,
                 "description": product.description,
-                "image": `https://blissbouquetkenya.com${product.image}`,
+                "image": toStructuredDataImage(product.image),
                 "offers": {
                   "@type": "Offer",
                   "price": product.price,
@@ -191,11 +229,17 @@ const CategoryPage = () => {
           </ol>
         </nav>
 
+        {catalog?.usedFallback && (
+          <p className="mb-6 text-center text-sm text-muted-foreground">
+            Showing saved catalog while live products are temporarily unavailable.
+          </p>
+        )}
+
         {/* View Controls */}
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-4">
             <h2 className="text-xl font-heading font-semibold text-foreground">
-              {filteredProducts.length} Products Found
+              {isLoading ? "Loading products..." : `${filteredProducts.length} Products Found`}
             </h2>
             <Badge variant="secondary">
               Same-Day Delivery Available
@@ -221,7 +265,39 @@ const CategoryPage = () => {
         </div>
 
         {/* Products Grid */}
-        {filteredProducts.length > 0 ? (
+        {showProductSkeleton ? (
+          <div
+            className={`grid gap-6 ${
+              viewMode === "grid"
+                ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                : "grid-cols-1"
+            }`}
+          >
+            {Array.from({ length: INITIAL_DISPLAY_COUNT }).map((_, index) => (
+              <div key={`category-product-skeleton-${index}`} className="space-y-4 rounded-lg border border-border p-4">
+                <Skeleton className="aspect-square w-full rounded-md" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+            ))}
+          </div>
+        ) : showEmptyState ? (
+          <div className="text-center py-12">
+            <h3 className="text-xl font-semibold mb-4">No products found</h3>
+            <p className="text-muted-foreground mb-6">
+              We're currently updating our {categorySlug.replace('-', ' ')} collection.
+            </p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Button variant="outline" onClick={() => void loadCatalog()}>
+                Try again
+              </Button>
+              <Button asChild>
+                <a href="/">Browse All Products</a>
+              </Button>
+            </div>
+          </div>
+        ) : (
           <>
             <div className={`grid gap-6 ${
               viewMode === "grid" 
@@ -245,23 +321,13 @@ const CategoryPage = () => {
                 <Button 
                   variant="outline" 
                   size="lg"
-                  onClick={() => setDisplayCount(prev => prev + 12)}
+                  onClick={() => setDisplayCount(prev => prev + DISPLAY_INCREMENT)}
                 >
                   Load More Products
                 </Button>
               </div>
             )}
           </>
-        ) : (
-          <div className="text-center py-12">
-            <h3 className="text-xl font-semibold mb-4">No products found</h3>
-            <p className="text-muted-foreground mb-6">
-              We're currently updating our {categorySlug.replace('-', ' ')} collection.
-            </p>
-            <Button asChild>
-              <a href="/">Browse All Products</a>
-            </Button>
-          </div>
         )}
 
         {/* SEO Content */}

@@ -96,6 +96,7 @@ const AdminProductsPage = () => {
       price: input.price,
       image: input.imageUrl.trim(),
       stockQuantity: input.stockQuantity,
+      isPopular: input.isPopular ?? false,
     };
 
     setProducts((currentProducts) =>

@@ -8,25 +8,68 @@ import Newsletter from "@/components/Newsletter";
 import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { getProductCategories, getProducts, getProductsByCategory } from "@/adapters/productAdapter";
-import { useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  buildHomepageProductCategories,
+  filterHomepageProductsByCategory,
+  loadHomepageCatalog,
+  type HomepageCatalogResult,
+} from "@/services/products.service";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Filter, Grid, List } from "lucide-react";
 import Footer from "@/components/Footer";
 
+const INITIAL_DISPLAY_COUNT = 8;
+const DISPLAY_INCREMENT = 8;
+
+const toStructuredDataImage = (image: string): string => {
+  if (/^https?:\/\//i.test(image)) {
+    return image;
+  }
+
+  return `https://blissbouquetkenya.com${image.startsWith("/") ? image : `/${image}`}`;
+};
+
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [displayCount, setDisplayCount] = useState(8);
+  const [displayCount, setDisplayCount] = useState(INITIAL_DISPLAY_COUNT);
+  const [catalog, setCatalog] = useState<HomepageCatalogResult | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const products = getProducts();
-  const categories = getProductCategories();
-  const filteredProducts = selectedCategory === "all" 
-    ? products 
-    : getProductsByCategory(selectedCategory);
+  const loadCatalog = useCallback(async () => {
+    setIsLoading(true);
 
+    try {
+      const result = await loadHomepageCatalog();
+      setCatalog(result);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadCatalog();
+  }, [loadCatalog]);
+
+  useEffect(() => {
+    setDisplayCount(INITIAL_DISPLAY_COUNT);
+  }, [selectedCategory]);
+
+  const catalogProducts = catalog?.products ?? [];
+  const categories = useMemo(
+    () => buildHomepageProductCategories(catalogProducts),
+    [catalogProducts],
+  );
+  const filteredProducts = useMemo(
+    () => filterHomepageProductsByCategory(catalogProducts, selectedCategory),
+    [catalogProducts, selectedCategory],
+  );
   const displayedProducts = filteredProducts.slice(0, displayCount);
   const hasMore = displayCount < filteredProducts.length;
+  const showProductSkeleton = isLoading && catalogProducts.length === 0;
+  const showEmptyState = !isLoading && catalogProducts.length === 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -103,7 +146,7 @@ const Index = () => {
                   "@type": "Product",
                   "name": product.name,
                   "description": product.description,
-                  "image": `https://blissbouquetkenya.com${product.image}`,
+                  "image": toStructuredDataImage(product.image),
                   "brand": {
                     "@type": "Brand",
                     "name": "Bliss Bouquet Kenya"
@@ -172,6 +215,12 @@ const Index = () => {
             </p>
           </div>
 
+          {catalog?.usedFallback && (
+            <p className="mb-6 text-center text-sm text-muted-foreground">
+              Showing saved catalog while live products are temporarily unavailable.
+            </p>
+          )}
+
           {/* Category Filter */}
           <div className="flex flex-wrap justify-center gap-3 mb-12">
             {categories.map((category) => (
@@ -180,6 +229,7 @@ const Index = () => {
                 variant={selectedCategory === category.id ? "default" : "outline"}
                 onClick={() => setSelectedCategory(category.id)}
                 className="animate-fade-in"
+                disabled={showProductSkeleton}
               >
                 {category.name}
                 <Badge variant="secondary" className="ml-2">
@@ -215,29 +265,58 @@ const Index = () => {
           </div>
 
           {/* Products Grid */}
-          <div className={`grid gap-6 ${
-            viewMode === "grid" 
-              ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" 
-              : "grid-cols-1"
-          }`}>
-            {displayedProducts.map((product, index) => (
-              <div
-                key={product.id}
-                className="animate-fade-in"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <ProductCard {...product} />
-              </div>
-            ))}
-          </div>
+          {showProductSkeleton ? (
+            <div
+              className={`grid gap-6 ${
+                viewMode === "grid"
+                  ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                  : "grid-cols-1"
+              }`}
+            >
+              {Array.from({ length: INITIAL_DISPLAY_COUNT }).map((_, index) => (
+                <div key={`product-skeleton-${index}`} className="space-y-4 rounded-lg border border-border p-4">
+                  <Skeleton className="aspect-square w-full rounded-md" />
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                  <Skeleton className="h-10 w-full" />
+                </div>
+              ))}
+            </div>
+          ) : showEmptyState ? (
+            <div className="rounded-lg border border-dashed border-border bg-background px-6 py-12 text-center">
+              <p className="text-lg font-medium text-foreground">No products available right now</p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Please check back soon or contact us for custom arrangements.
+              </p>
+              <Button className="mt-6" variant="outline" onClick={() => void loadCatalog()}>
+                Try again
+              </Button>
+            </div>
+          ) : (
+            <div className={`grid gap-6 ${
+              viewMode === "grid" 
+                ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" 
+                : "grid-cols-1"
+            }`}>
+              {displayedProducts.map((product, index) => (
+                <div
+                  key={product.id}
+                  className="animate-fade-in"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <ProductCard {...product} />
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* Load More */}
-          {hasMore && (
+          {hasMore && !showProductSkeleton && !showEmptyState && (
             <div className="text-center mt-12">
               <Button 
                 variant="outline" 
                 size="lg"
-                onClick={() => setDisplayCount(prev => prev + 8)}
+                onClick={() => setDisplayCount(prev => prev + DISPLAY_INCREMENT)}
               >
                 Load More Products
               </Button>

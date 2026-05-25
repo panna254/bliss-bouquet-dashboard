@@ -3,6 +3,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import type { AdminProduct, CreateProductInput } from "@/services/products.service";
 
@@ -20,6 +21,7 @@ interface ProductFormValues {
   price: string;
   stockQuantity: string;
   imageUrl: string;
+  isPopular: boolean;
 }
 
 type ProductFormErrors = Partial<Record<keyof ProductFormValues, string>>;
@@ -31,6 +33,7 @@ const initialValues: ProductFormValues = {
   price: "",
   stockQuantity: "",
   imageUrl: "",
+  isPopular: false,
 };
 
 const isValidImageReference = (value: string): boolean => {
@@ -95,6 +98,7 @@ const valuesFromProduct = (product: AdminProduct | null | undefined): ProductFor
     price: String(product.price),
     stockQuantity: String(product.stockQuantity),
     imageUrl: product.image,
+    isPopular: product.isPopular ?? false,
   };
 };
 
@@ -185,6 +189,7 @@ const ProductForm = ({ mode = "create", initialProduct, onSubmit, onCancel }: Pr
         imageFile,
         price: Number(values.price),
         stockQuantity: Number(values.stockQuantity),
+        isPopular: values.isPopular,
       });
 
       if (isEditMode) {
@@ -313,6 +318,26 @@ const ProductForm = ({ mode = "create", initialProduct, onSubmit, onCancel }: Pr
           disabled={isSubmitting}
         />
         {errors.description && <p className="text-xs text-destructive">{errors.description}</p>}
+      </div>
+
+      <div className="flex items-center justify-between gap-4 rounded-md border p-4">
+        <div className="space-y-1">
+          <Label htmlFor="product-featured">Featured on homepage</Label>
+          <p className="text-xs text-muted-foreground">
+            Mark as popular to prioritize this product in the featured carousel (up to six items).
+          </p>
+        </div>
+        <Switch
+          id="product-featured"
+          checked={values.isPopular}
+          onCheckedChange={(checked) =>
+            setValues((currentValues) => ({
+              ...currentValues,
+              isPopular: checked,
+            }))
+          }
+          disabled={isSubmitting}
+        />
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

@@ -1,11 +1,31 @@
-import { getProductById as getLocalProductById, type Product } from "@/adapters/productAdapter";
+import {
+  getProducts as getLocalCatalogProducts,
+  getProductsByCategory as getLocalProductsByCategory,
+} from "@/adapters/productAdapter";
+import {
+  allowsLocalFallback,
+  getCatalogSource,
+  usesLocalCatalogOnly,
+} from "@/services/catalogSource.service";
 import { getSupabaseClient } from "@/lib/supabaseClient";
 import { requireAdminSession } from "@/services/auth.service";
+import {
+  findSupabaseProductForLocal,
+  getLocalProductByLegacyId,
+  isUuid,
+  normalizeCategory,
+  normalizeSupabaseProduct,
+  resolveCheckoutProductId,
+  type Product,
+  type ProductRow,
+} from "@/services/productNormalization";
 import {
   uploadProductImage,
   replaceProductImage,
   isSupabaseStorageUrl,
 } from "@/services/storage.service";
+
+export type { Product } from "@/services/productNormalization";
 
 export interface ProductListQuery {
   category?: string;
@@ -36,7 +56,11 @@ export interface CreateProductInput {
   imageFile?: File | null;
   category: string;
   stockQuantity: number;
+  isPopular?: boolean;
 }
+
+const ADMIN_PRODUCT_COLUMNS =
+  "id,name,description,price,image_url,category,stock_quantity,is_popular,created_at";
 
 export type UpdateProductInput = CreateProductInput;
 
@@ -52,47 +76,8 @@ export interface ProductsService {
   getProductsByCategory(category: string): Promise<Product[]>;
 }
 
-interface ProductRow {
-  id: string;
-  name: string;
-  description: string;
-  price: number | string;
-  image_url: string;
-  category: string;
-  stock_quantity?: number | null;
-  original_price?: number | string | null;
-  rating?: number | string | null;
-  review_count?: number | null;
-  is_popular?: boolean | null;
-  is_same_day?: boolean | null;
-  featured?: boolean | null;
-}
-
-const toNumber = (value: number | string | null | undefined, fallback = 0): number => {
-  if (value === null || value === undefined || value === "") {
-    return fallback;
-  }
-
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : fallback;
-};
-
-const toProduct = (row: ProductRow): Product => ({
-  id: row.id,
-  name: row.name,
-  price: toNumber(row.price),
-  originalPrice: row.original_price ? toNumber(row.original_price) : undefined,
-  image: row.image_url,
-  rating: toNumber(row.rating),
-  reviewCount: row.review_count ?? 0,
-  isPopular: row.is_popular ?? row.featured ?? undefined,
-  isSameDay: row.is_same_day ?? undefined,
-  description: row.description,
-  category: row.category,
-});
-
 const toAdminProduct = (row: ProductRow): AdminProduct => ({
-  ...toProduct(row),
+  ...normalizeSupabaseProduct(row),
   stockQuantity: row.stock_quantity ?? 0,
 });
 
@@ -114,7 +99,7 @@ export async function listProducts(query?: ProductListQuery): Promise<ProductLis
     .order("created_at", { ascending: false });
 
   if (query?.category && query.category !== "all") {
-    request = request.eq("category", query.category);
+    request = request.eq("category", normalizeCategory(query.category));
   }
 
   const search = query?.search?.trim();
@@ -136,7 +121,7 @@ export async function listProducts(query?: ProductListQuery): Promise<ProductLis
   }
 
   return {
-    products: ((data ?? []) as ProductRow[]).map(toProduct),
+    products: ((data ?? []) as ProductRow[]).map(normalizeSupabaseProduct),
     total: count ?? data?.length ?? 0,
   };
 }
@@ -149,11 +134,11 @@ export async function listAdminProducts(query?: ProductListQuery): Promise<Admin
 
   let request = supabase
     .from("products")
-    .select("id,name,description,price,image_url,category,stock_quantity,created_at", { count: "exact" })
+    .select(`${ADMIN_PRODUCT_COLUMNS}`, { count: "exact" })
     .order("created_at", { ascending: false });
 
   if (query?.category && query.category !== "all") {
-    request = request.eq("category", query.category);
+    request = request.eq("category", normalizeCategory(query.category));
   }
 
   const search = query?.search?.trim();
@@ -216,8 +201,9 @@ export async function createProduct(input: CreateProductInput): Promise<AdminPro
       image_url: imageUrl,
       category: input.category.trim(),
       stock_quantity: input.stockQuantity,
+      is_popular: input.isPopular ?? false,
     })
-    .select("id,name,description,price,image_url,category,stock_quantity,created_at")
+    .select(ADMIN_PRODUCT_COLUMNS)
     .single();
 
   if (error || !data) {
@@ -259,9 +245,10 @@ export async function updateProduct(productId: string, input: UpdateProductInput
       image_url: imageUrl,
       category: input.category.trim(),
       stock_quantity: input.stockQuantity,
+      is_popular: input.isPopular ?? false,
     })
     .eq("id", productId)
-    .select("id,name,description,price,image_url,category,stock_quantity,created_at")
+    .select(ADMIN_PRODUCT_COLUMNS)
     .maybeSingle();
 
   if (error) {
@@ -292,9 +279,6 @@ export async function getProducts(): Promise<Product[]> {
   return products;
 }
 
-const isUuid = (value: string): boolean =>
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
-
 export async function getProductById(productId: string): Promise<Product | null> {
   if (!isUuid(productId)) {
     return null;
@@ -312,41 +296,223 @@ export async function getProductById(productId: string): Promise<Product | null>
     throw normalizeProductError(`Unable to fetch product ${productId}`, error);
   }
 
-  return data ? toProduct(data as ProductRow) : null;
+  return data ? normalizeSupabaseProduct(data as ProductRow) : null;
 }
 
 export async function getCheckoutProductByCartId(productId: string): Promise<Product | null> {
-  let supabaseProduct: Product | null = null;
+  const idKind = resolveCheckoutProductId(productId);
 
-  if (isUuid(productId)) {
+  if (idKind === "uuid") {
     try {
-      supabaseProduct = await getProductById(productId);
+      return await getProductById(productId);
     } catch {
-      supabaseProduct = null;
+      return null;
     }
   }
 
-  if (supabaseProduct) {
-    return supabaseProduct;
+  if (idKind !== "legacy") {
+    return null;
   }
 
-  const localProduct = getLocalProductById(productId);
+  const localProduct = getLocalProductByLegacyId(productId);
 
   if (!localProduct) {
     return null;
   }
 
-  const { products } = await listProducts({ search: localProduct.name, limit: 10 });
-  const matchingProduct = products.find(
-    (product) =>
-      product.name.trim().toLowerCase() === localProduct.name.trim().toLowerCase() &&
-      product.category === localProduct.category,
-  );
+  const { products } = await listProducts({
+    category: localProduct.category,
+    search: localProduct.name,
+    limit: 25,
+  });
 
-  return matchingProduct ?? null;
+  return findSupabaseProductForLocal(localProduct, products);
 }
 
 export async function getProductsByCategory(category: string): Promise<Product[]> {
   const { products } = await listProducts({ category });
   return products;
+}
+
+export type HomepageCatalogSource = "supabase" | "local";
+
+export interface HomepageCatalogResult {
+  products: Product[];
+  source: HomepageCatalogSource;
+  usedFallback: boolean;
+}
+
+export interface HomepageProductCategory {
+  id: string;
+  name: string;
+  count: number;
+}
+
+const HOMEPAGE_CATEGORY_LABELS: Record<string, string> = {
+  bouquets: "Bouquets",
+  "gift-sets": "Gift Sets",
+  roses: "Roses",
+  "money-bouquets": "Money Bouquets",
+};
+
+export const filterHomepageProductsByCategory = (
+  products: Product[],
+  categoryId: string,
+): Product[] => {
+  if (categoryId === "all") {
+    return products;
+  }
+
+  return products.filter((product) => product.category === categoryId);
+};
+
+export const buildHomepageProductCategories = (products: Product[]): HomepageProductCategory[] => [
+  {
+    id: "all",
+    name: "All Products",
+    count: products.length,
+  },
+  ...Object.entries(HOMEPAGE_CATEGORY_LABELS).map(([id, name]) => ({
+    id,
+    name,
+    count: products.filter((product) => product.category === id).length,
+  })),
+];
+
+export const FEATURED_PRODUCT_LIMIT = 6;
+
+export const selectFeaturedProducts = (products: Product[]): Product[] => {
+  const popular = products.filter((product) => product.isPopular);
+
+  if (popular.length > 0) {
+    return popular.slice(0, FEATURED_PRODUCT_LIMIT);
+  }
+
+  return products.slice(0, FEATURED_PRODUCT_LIMIT);
+};
+
+export interface FeaturedCatalogResult extends HomepageCatalogResult {
+  featuredProducts: Product[];
+}
+
+export async function loadFeaturedProducts(): Promise<FeaturedCatalogResult> {
+  const catalog = await loadHomepageCatalog();
+
+  return {
+    ...catalog,
+    featuredProducts: selectFeaturedProducts(catalog.products),
+  };
+}
+
+const loadLocalCategoryCatalog = (config: CategoryPageLoadConfig): HomepageCatalogResult => {
+  const products = config.category
+    ? getLocalProductsByCategory(config.category)
+    : filterCategoryPageProducts(getLocalCatalogProducts(), config);
+
+  return {
+    products,
+    source: "local",
+    usedFallback: false,
+  };
+};
+
+const loadLocalHomepageCatalog = (): HomepageCatalogResult => ({
+  products: getLocalCatalogProducts(),
+  source: "local",
+  usedFallback: false,
+});
+
+const buildLocalFallbackResult = (products: Product[]): HomepageCatalogResult => ({
+  products,
+  source: "local",
+  usedFallback: true,
+});
+
+const buildLiveCatalogResult = (products: Product[]): HomepageCatalogResult => ({
+  products,
+  source: "supabase",
+  usedFallback: false,
+});
+
+export async function loadHomepageCatalog(): Promise<HomepageCatalogResult> {
+  if (usesLocalCatalogOnly()) {
+    return loadLocalHomepageCatalog();
+  }
+
+  const mode = getCatalogSource();
+
+  try {
+    const liveProducts = await getProducts();
+
+    if (mode === "supabase") {
+      return buildLiveCatalogResult(liveProducts);
+    }
+
+    if (liveProducts.length > 0) {
+      return buildLiveCatalogResult(liveProducts);
+    }
+  } catch {
+    if (allowsLocalFallback()) {
+      return buildLocalFallbackResult(getLocalCatalogProducts());
+    }
+
+    return buildLiveCatalogResult([]);
+  }
+
+  if (allowsLocalFallback()) {
+    return buildLocalFallbackResult(getLocalCatalogProducts());
+  }
+
+  return buildLiveCatalogResult([]);
+}
+
+export interface CategoryPageLoadConfig {
+  category?: string;
+  occasion?: string;
+}
+
+export const filterCategoryPageProducts = (
+  products: Product[],
+  config: CategoryPageLoadConfig,
+): Product[] => {
+  if (config.category) {
+    return filterHomepageProductsByCategory(products, config.category);
+  }
+
+  if (config.occasion) {
+    const occasion = config.occasion.trim().toLowerCase();
+
+    return products.filter((product) => {
+      const searchText = `${product.name} ${product.description}`.toLowerCase();
+      return searchText.includes(occasion);
+    });
+  }
+
+  return [];
+};
+
+export async function loadCategoryPageCatalog(
+  config: CategoryPageLoadConfig,
+): Promise<HomepageCatalogResult> {
+  if (usesLocalCatalogOnly()) {
+    return loadLocalCategoryCatalog(config);
+  }
+
+  try {
+    const liveProducts = config.category
+      ? await getProductsByCategory(config.category)
+      : filterCategoryPageProducts(await getProducts(), config);
+
+    return buildLiveCatalogResult(liveProducts);
+  } catch {
+    if (allowsLocalFallback()) {
+      return buildLocalFallbackResult(
+        config.category
+          ? getLocalProductsByCategory(config.category)
+          : filterCategoryPageProducts(getLocalCatalogProducts(), config),
+      );
+    }
+  }
+
+  return buildLiveCatalogResult([]);
 }
