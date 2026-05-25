@@ -77,7 +77,8 @@ const AdminOrderDetails = ({
   onStatusChange,
 }: AdminOrderDetailsProps) => {
   const availableStatusUpdates = getAvailableOrderStatusUpdates(order.status);
-  const canUpdateStatus = availableStatusUpdates.some((status) => status !== order.status);
+  const nextStatusOptions = availableStatusUpdates.filter((status) => status !== order.status);
+  const canUpdateStatus = nextStatusOptions.length > 0;
 
   const handleStatusSelect = (value: string) => {
     if (isSupportedAdminOrderStatus(value)) {
@@ -95,18 +96,25 @@ const AdminOrderDetails = ({
           </div>
           <div className="w-full space-y-2 sm:w-56">
             {onStatusChange && isSupportedAdminOrderStatus(order.status) ? (
-              <Select value={order.status} onValueChange={handleStatusSelect} disabled={isUpdatingStatus || !canUpdateStatus}>
-                <SelectTrigger aria-label="Order status">
-                  <SelectValue placeholder="Order status" />
-                </SelectTrigger>
-                <SelectContent>
-                  {ADMIN_ORDER_STATUSES.map((status) => (
-                    <SelectItem key={status} value={status} disabled={!canTransitionOrderStatus(order.status, status)}>
-                      {formatStatus(status)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <>
+                <Select value={order.status} onValueChange={handleStatusSelect} disabled={isUpdatingStatus || !canUpdateStatus}>
+                  <SelectTrigger aria-label="Order status">
+                    <SelectValue placeholder="Order status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ADMIN_ORDER_STATUSES.map((status) => (
+                      <SelectItem key={status} value={status} disabled={!canTransitionOrderStatus(order.status, status)}>
+                        {formatStatus(status)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  {canUpdateStatus
+                    ? `Next allowed status${nextStatusOptions.length > 1 ? "es" : ""}: ${nextStatusOptions.map(formatStatus).join(", ")}`
+                    : "This order is in a terminal status and cannot be advanced further."}
+                </p>
+              </>
             ) : (
               <span className="inline-flex w-fit rounded-md border border-muted bg-muted px-2 py-1 text-xs font-medium capitalize text-muted-foreground">
                 {formatStatus(order.status)}

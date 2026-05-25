@@ -9,14 +9,24 @@ export type OrderStatus =
   | "delivered"
   | "cancelled";
 
-export type AdminOrderStatus = Extract<OrderStatus, "pending" | "confirmed" | "delivered">;
+export type AdminOrderStatus = OrderStatus;
 
-export const ADMIN_ORDER_STATUSES: readonly AdminOrderStatus[] = ["pending", "confirmed", "delivered"];
+export const ADMIN_ORDER_STATUSES: readonly AdminOrderStatus[] = [
+  "pending",
+  "confirmed",
+  "preparing",
+  "out_for_delivery",
+  "delivered",
+  "cancelled",
+];
 
-const adminOrderStatusTransitions: Record<AdminOrderStatus, readonly AdminOrderStatus[]> = {
-  pending: ["confirmed"],
-  confirmed: ["delivered"],
+const adminOrderStatusTransitions: Record<OrderStatus, readonly OrderStatus[]> = {
+  pending: ["confirmed", "cancelled"],
+  confirmed: ["preparing", "cancelled"],
+  preparing: ["out_for_delivery", "cancelled"],
+  out_for_delivery: ["delivered", "cancelled"],
   delivered: [],
+  cancelled: [],
 };
 
 export interface OrderItem {
